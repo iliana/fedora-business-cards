@@ -10,3 +10,6 @@ out.svg:
 
 out.png: out.svg
 	$(INKSCAPE) $(INKSCAPE_OPTIONS) --export-area-canvas --export-png=out.png out.svg
+
+clean:
+	rm -f out.svg out.png
