@@ -25,7 +25,7 @@ templates that this script requires.
 You'll need mgopen-fonts, python-fedora, and pygpgme from yum.
 """
 
-from fedora.accounts.fas2 import AccountSystem
+from fedora.client.fas2 import AccountSystem
 from optparse import OptionParser
 import gpgme
 import re
@@ -34,7 +34,6 @@ from getpass import getpass
 from xml.dom import minidom
 import rsvg
 import cairo
-import sys
 
 if not cairo.HAS_PDF_SURFACE:
     raise SystemExit('cairo was not compiled with PDF support')
@@ -74,11 +73,11 @@ class BusinessCardError(ValueError):
             return "No GPG key ID for %s, use override" % self.args[0]
 
 
-def svg_to_pdf_png(basename=None,xmlstring=None):
+def svg_to_pdf_png(basename=None, xmlstring=None):
     # thanks, spoleeba
     svg = rsvg.Handle(data=xmlstring)
-    pdfname=basename+'.pdf'
-    pngname=basename+'.png'
+    pdfname = basename+'.pdf'
+    pngname = basename+'.png'
     pdffile = file(pdfname, 'w')
     surface = cairo.PDFSurface(pdffile, svg.props.width, svg.props.height)
     ctx = cairo.Context(surface)
@@ -86,6 +85,7 @@ def svg_to_pdf_png(basename=None,xmlstring=None):
     surface.write_to_png(pngname)
     surface.finish()
     pdffile.close()
+
 
 def get_gpg_fingerprint(keyid):
     """
@@ -133,10 +133,8 @@ def gen_front(name, title, lines, outfile):
     for i in range(6):
         node = find_node(dom, 'tspan', 'id', 'line%d' % (i+1))
         node.appendChild(dom.createTextNode(lines[i]))
-    hmm=dom.toxml()
-    print dir(hmm)
-    svg_to_pdf_png(basename=outfile,xmlstring=dom.toxml())
-    svgfile=outfile+'.svg'
+    svg_to_pdf_png(basename=outfile, xmlstring=dom.toxml())
+    svgfile = outfile+'.svg'
     out = file(svgfile, "w")
     out.write(dom.toxml())
     out.close()
