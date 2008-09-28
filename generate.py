@@ -32,6 +32,15 @@ import re
 import subprocess
 from getpass import getpass
 from xml.dom import minidom
+import rsvg
+import cairo
+import sys
+
+if not cairo.HAS_PDF_SURFACE:
+    raise SystemExit('cairo was not compiled with PDF support')
+if not cairo.HAS_PNG_FUNCTIONS:
+    raise SystemExit('cairo was not compiled with PNG support')
+
 
 VALID_INFO = ['email', 'phone', 'irc', 'url', 'gpgid', 'gpgfingerprint',
               'blank']
@@ -64,6 +73,19 @@ class BusinessCardError(ValueError):
         if self.problem == "nogpg":
             return "No GPG key ID for %s, use override" % self.args[0]
 
+
+def svg_to_pdf_png(basename=None,xmlstring=None):
+    # thanks, spoleeba
+    svg = rsvg.Handle(data=xmlstring)
+    pdfname=basename+'.pdf'
+    pngname=basename+'.png'
+    pdffile = file(pdfname, 'w')
+    surface = cairo.PDFSurface(pdffile, svg.props.width, svg.props.height)
+    ctx = cairo.Context(surface)
+    svg.render_cairo(ctx)
+    surface.write_to_png(pngname)
+    surface.finish()
+    pdffile.close()
 
 def get_gpg_fingerprint(keyid):
     """
@@ -111,7 +133,11 @@ def gen_front(name, title, lines, outfile):
     for i in range(6):
         node = find_node(dom, 'tspan', 'id', 'line%d' % (i+1))
         node.appendChild(dom.createTextNode(lines[i]))
-    out = file(outfile, "w")
+    hmm=dom.toxml()
+    print dir(hmm)
+    svg_to_pdf_png(basename=outfile,xmlstring=dom.toxml())
+    svgfile=outfile+'.svg'
+    out = file(svgfile, "w")
     out.write(dom.toxml())
     out.close()
 
@@ -186,7 +212,7 @@ def main():
     for i in info:
         lines.append(overrides[i] or infodict[i])
     gen_front(overrides['name'] or infodict['name'], overrides['title'] or
-              infodict['title'], lines, 'out.svg')
+              infodict['title'], lines, 'out')
 
 if __name__ == "__main__":
     main()
