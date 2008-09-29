@@ -17,4 +17,15 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ###
 
-__all__ = ('frontend')
+"""
+Frontend to the business card generator. Theoretically expandable to GUI and
+whatnot, but for now just has a command-line interface.
+"""
+
+from optparse import OptionParser
+
+def cmdline():
+    parser = OptionParser()
+    parser.add_option("-d", "--dpi", dest="dpi", default=300,
+                      help="DPI of exported PNG")
+    options = parser.parse_args()[0]

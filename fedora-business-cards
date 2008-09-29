@@ -1,0 +1,11 @@
+#!/usr/bin/python
+import sys
+try:
+    from fedora_business_cards import frontend
+    frontend.cmdline()
+except ImportError:
+    print >> sys.stderr, """\
+There was a problem importing the fedora_business_cards module. Please make sure
+that you have fedora-business-cards installed properly.
+"""
+    sys.exit(1)
