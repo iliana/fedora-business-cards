@@ -25,7 +25,25 @@ whatnot, but for now just has a command-line interface.
 from optparse import OptionParser
 
 def cmdline():
+    """
+    Command-line interface to business card generator. Takes no arguments; uses
+    optparser.OptionParser instead.
+    """
     parser = OptionParser()
-    parser.add_option("-d", "--dpi", dest="dpi", default=300,
-                      help="DPI of exported PNG")
+    parser.usage = "%prog [options] [outfile]"
+    parser.add_option("-d", "--dpi", dest="dpi", default=300, type="int",
+                      help="DPI of exported file")
+    parser.add_option("-t", "--template", dest="template",
+                      default="northamerica", help="Name of template to use, "+\
+                      "run with --list-templates to see a list")
+    parser.add_option("--list-templates", dest="template", action="store_true",
+                      dest="listtemplates", default=False,
+                      help="List available templates")
+    parser.add_option("-u", "--username", dest="username", default="",
+                      help="If set, use a different name than the one logged"+\
+                      " in with to fill out business card information")
+    parser.add_option("--pdf", dest="output", default="png", const="pdf",
+                      action="store_const", help="Export as PDF")
+    parser.add_option("--png", dest="output", default="png", const="png",
+                      action="store_const", help="Export as PNG (default)")
     options = parser.parse_args()[0]
