@@ -25,6 +25,7 @@ Functions to export cards from SVGs.
 
 import rsvg
 import cairo
+from StringIO import StringIO
 
 if not cairo.HAS_PDF_SURFACE:
     raise SystemExit('cairo was not compiled with PDF support')
@@ -32,21 +33,25 @@ if not cairo.HAS_PNG_FUNCTIONS:
     raise SystemExit('cairo was not compiled with PNG support')
 
 
-def svg_to_pdf_png(pdfname, pngname, xmlstring, dpi=300):
+def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
     """
-    Export an SVG to both a PDF and PNG.
-      pngname = location of PNG file to export to
-      pdfname = location of pdf file to export to
+    Export an SVG to either a PDF or PNG.
       xmlstring = the SVG XML to export
+      filename = name of file to save as
+      format = either 'png' or 'pdf'
       dpi = DPI to export PNG with (default: 300)
     """
     svg = rsvg.Handle(data=xmlstring)
-    pdffile = file(pdfname, 'w')
+    if format == "pdf":
+        pdffile = file(filename, 'w')
+    else:
+        pdffile = StringIO()
     width = int(svg.props.width/90.*dpi)
     height = int(svg.props.height/90.*dpi)
     surface = cairo.PDFSurface(pdffile, width, height)
     ctx = cairo.Context(surface)
     svg.render_cairo(ctx)
-    surface.write_to_png(pngname)
+    if format == "png":
+        surface.write_to_png(filename)
     surface.finish()
     pdffile.close()

@@ -31,6 +31,11 @@ from getpass import getpass
 import config
 import information
 
+
+def cmdline_card_line(data):
+    return "| %s%s |" % (data, ' '*(59-len(data)))
+
+
 def cmdline():
     """
     Command-line interface to business card generator. Takes no arguments; uses
@@ -87,3 +92,52 @@ def cmdline():
     if options.username == "":
         options.username = username
     infodict = information.get_information(username, password, options.username)
+    # setup default content
+    name = infodict['name']
+    title = infodict['title']
+    if infodict['gpgid'] == None:
+        gpg = ''
+    else:
+        gpg = "GPG key ID: %s" % infodict['gpgid']
+    if infodict['irc'] == None:
+        lines = [infodict['email'],
+                 infodict['phone'],
+                 infodict['url'],
+                 '',
+                 gpg,
+                 '']
+    else:
+        lines = [infodict['email'],
+                 infodict['phone'],
+                 infodict['irc']+" on irc.freenode.net",
+                 infodict['url'],
+                 '',
+                 "GPG key ID: "+infodict['gpgid']]
+    done_editing = False
+    while not done_editing:
+        print "Current business card layout:"
+        print "   +"+"-"*61+"+"
+        print " n "+cmdline_card_line(name)
+        print " t "+cmdline_card_line(title)
+        print "   "+cmdline_card_line('')
+        for i in range(6):
+            print (" %i " % i)+cmdline_card_line(lines[i])
+        print "   "+cmdline_card_line('')
+        print "   "+cmdline_card_line('')
+        print "   "+cmdline_card_line('fedora'+' '*17+\
+                                      'freedom | friends | features | first')
+        print "   +"+"-"*61+"+"
+        print "Enter a line number to edit, or [y] to accept:",
+        lineno = raw_input()
+        if lineno == "" or lineno == "y":
+            done_editing = True
+        else:
+            print ("Enter new data for line %s:" % lineno),
+            newdata = raw_input()
+            if lineno == 'n':
+                name = newdata
+            elif lineno == 't':
+                title = newdata
+            elif lineno == '0' or lineno == '1' or lineno == '2' or \
+                    lineno == '3' or lineno == '4' or lineno == '5':
+                lines[int(lineno)] = newdata
