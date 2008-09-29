@@ -23,12 +23,16 @@ whatnot, but for now just has a command-line interface.
 """
 
 from optparse import OptionParser
+from . import config
+import os
+import sys
 
 def cmdline():
     """
     Command-line interface to business card generator. Takes no arguments; uses
     optparser.OptionParser instead.
     """
+    # setup option parser
     parser = OptionParser()
     parser.usage = "%prog [options] [outfile]"
     parser.add_option("-d", "--dpi", dest="dpi", default=300, type="int",
@@ -36,9 +40,8 @@ def cmdline():
     parser.add_option("-t", "--template", dest="template",
                       default="northamerica", help="Name of template to use, "+\
                       "run with --list-templates to see a list")
-    parser.add_option("--list-templates", dest="template", action="store_true",
-                      dest="listtemplates", default=False,
-                      help="List available templates")
+    parser.add_option("--list-templates", action="store_true", default=False,
+                      dest="listtemplates", help="List available templates")
     parser.add_option("-u", "--username", dest="username", default="",
                       help="If set, use a different name than the one logged"+\
                       " in with to fill out business card information")
@@ -47,3 +50,28 @@ def cmdline():
     parser.add_option("--png", dest="output", default="png", const="png",
                       action="store_const", help="Export as PNG (default)")
     options = parser.parse_args()[0]
+    # check what templates are available
+    templates_dir = config.parser.get('location', 'templates')
+    contents = os.listdir(templates_dir)
+    checked_once = []
+    available_templates = []
+    for i in contents:
+        if i[-4:] == '.svg':
+            if i[:6] == 'front-':
+                name = i[6:-4]
+            elif i[:5] == 'back-':
+                name = i[5:-4]
+            else:
+                continue
+            if name in checked_once:
+                available_templates.append(name)
+            else:
+                checked_once.append(name)
+    if options.listtemplates:
+        print "Available templates:"
+        for i in available_templates:
+            print "  %s" % i
+        sys.exit(0)
+    if options.template not in available_templates:
+        print "%s not an available template" % options.template
+        sys.exit(1)
