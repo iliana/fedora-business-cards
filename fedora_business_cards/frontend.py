@@ -23,7 +23,7 @@ whatnot, but for now just has a command-line interface.
 """
 
 from optparse import OptionParser
-from . import config
+import config
 import os
 import sys
 

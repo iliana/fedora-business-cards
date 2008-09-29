@@ -26,7 +26,7 @@ import iniparse
 import os
 
 # locations, in reverse-order of priority
-LOCATIONS = ['./config.ini',
+LOCATIONS = ['/'.join(__file__.split('/')[:-1]+['config.ini']),
              '/usr/share/fedora-business-cards/config.ini',
              '/etc/fedora-business-cards.ini',
              os.getenv('HOME')+'/.fedora-business-cards.ini']
@@ -35,6 +35,6 @@ parser = iniparse.ConfigParser()
 
 # import the configs
 for i in LOCATIONS:
-    parser.read(LOCATIONS[i])
+    parser.read(i)
 
 __all__ = ('parser')
