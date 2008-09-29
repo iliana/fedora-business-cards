@@ -24,7 +24,9 @@ Assembles information about a person from FAS and their GPG key.
 from fedora.client.fas2 import AccountSystem
 import gpgme
 import re
-from . import exceptions
+
+# local imports
+import exceptions
 
 
 def get_gpg_fingerprint(keyid):

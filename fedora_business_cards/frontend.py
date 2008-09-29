@@ -23,9 +23,13 @@ whatnot, but for now just has a command-line interface.
 """
 
 from optparse import OptionParser
-import config
 import os
 import sys
+from getpass import getpass
+
+# local imports
+import config
+import information
 
 def cmdline():
     """
@@ -75,3 +79,11 @@ def cmdline():
     if options.template not in available_templates:
         print "%s not an available template" % options.template
         sys.exit(1)
+    # ask for FAS login
+    print "Login to FAS:"
+    print "Username:",
+    username = raw_input()
+    password = getpass()
+    if options.username == "":
+        options.username = username
+    infodict = information.get_information(username, password, options.username)

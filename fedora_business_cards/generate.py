@@ -22,7 +22,9 @@ Generates both sides of the business card.
 """
 
 from xml.dom import minidom
-from . import config
+
+# local imports
+import config
 
 
 def find_node(doc_node, tag_name, attribute_name, attribute_value):
