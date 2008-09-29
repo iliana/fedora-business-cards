@@ -30,6 +30,8 @@ from getpass import getpass
 # local imports
 import config
 import information
+import generate
+import export
 
 
 def cmdline_card_line(data):
@@ -43,7 +45,7 @@ def cmdline():
     """
     # setup option parser
     parser = OptionParser()
-    parser.usage = "%prog [options] [outfile]"
+    parser.usage = "%prog [options]"
     parser.add_option("-d", "--dpi", dest="dpi", default=300, type="int",
                       help="DPI of exported file")
     parser.add_option("-t", "--template", dest="template",
@@ -141,3 +143,11 @@ def cmdline():
             elif lineno == '0' or lineno == '1' or lineno == '2' or \
                     lineno == '3' or lineno == '4' or lineno == '5':
                 lines[int(lineno)] = newdata
+    # generate front of business card
+    xml = generate.gen_front(name, title, lines, options.template)
+    export.svg_to_pdf_png(xml, options.username+'-front.'+options.output,
+                          options.output, options.dpi)
+    # generate back of business card
+    xml = generate.gen_back(options.template)
+    export.svg_to_pdf_png(xml, options.username+'-back.'+options.output,
+                          options.output, options.dpi)
