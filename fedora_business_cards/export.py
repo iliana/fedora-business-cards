@@ -50,6 +50,7 @@ def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
     height = int(svg.props.height/90.*dpi)
     surface = cairo.PDFSurface(pdffile, width, height)
     ctx = cairo.Context(surface)
+    ctx.scale(dpi/90., dpi/90.)
     svg.render_cairo(ctx)
     if format == "png":
         surface.write_to_png(filename)

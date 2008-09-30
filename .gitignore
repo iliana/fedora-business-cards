@@ -2,5 +2,5 @@
 *.swp
 *.pyc
 *.pyo
-*out.svg
 *.png
+*.svg
