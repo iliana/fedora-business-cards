@@ -24,6 +24,15 @@ Functions to export cards from SVGs.
 import subprocess
 
 
+def svg_to_file(xmlstring, filename):
+    """
+    Write an SVG to a file.
+    """
+    f = file(filename, 'w')
+    f.write(xmlstring.encode('utf-8'))
+    f.close()
+    return True
+
 def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
     """
     Export an SVG to either a PDF or PNG.
@@ -45,3 +54,4 @@ def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
         sp.communicate(stdin)
     else:
         raise Exception("Invalid file format requested")
+    return True

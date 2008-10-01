@@ -60,6 +60,8 @@ def cmdline():
                       action="store_const", help="Export as PDF")
     parser.add_option("--png", dest="output", default="png", const="png",
                       action="store_const", help="Export as PNG (default)")
+    parser.add_option("--svg", dest="output", default="png", const="svg",
+                      action="store_const", help="Export as SVG")
     options = parser.parse_args()[0]
     # check what templates are available
     templates_dir = config.parser.get('location', 'templates')
@@ -145,9 +147,15 @@ def cmdline():
                 lines[int(lineno)] = newdata
     # generate front of business card
     xml = generate.gen_front(name, title, lines, options.template)
-    export.svg_to_pdf_png(xml, options.username+'-front.'+options.output,
-                          options.output, options.dpi)
+    if options.output == "svg":
+        export.svg_to_file(xml, options.username+'-front.'+options.output)
+    else:
+        export.svg_to_pdf_png(xml, options.username+'-front.'+options.output,
+                              options.output, options.dpi)
     # generate back of business card
     xml = generate.gen_back(options.template)
-    export.svg_to_pdf_png(xml, options.username+'-back.'+options.output,
-                          options.output, options.dpi)
+    if options.output == "svg":
+        export.svg_to_file(xml, options.username+'-back.'+options.output)
+    else:
+        export.svg_to_pdf_png(xml, options.username+'-back.'+options.output,
+                              options.output, options.dpi)
