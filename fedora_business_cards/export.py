@@ -21,16 +21,7 @@
 Functions to export cards from SVGs.
 """
 
-# Thanks much to Jef Spaleta for this code.
-
-import rsvg
-import cairo
-from StringIO import StringIO
-
-if not cairo.HAS_PDF_SURFACE:
-    raise SystemExit('cairo was not compiled with PDF support')
-if not cairo.HAS_PNG_FUNCTIONS:
-    raise SystemExit('cairo was not compiled with PNG support')
+import subprocess
 
 
 def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
@@ -41,18 +32,16 @@ def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
       format = either 'png' or 'pdf'
       dpi = DPI to export PNG with (default: 300)
     """
-    svg = rsvg.Handle(data=xmlstring)
-    if format == "pdf":
-        pdffile = file(filename, 'w')
+    stdin = xmlstring.encode('iso-8859-1')
+    command = ['inkscape', '-d', str(dpi), '-e', filename, '/dev/stdin']
+    if format == 'png':
+        sp = subprocess.Popen(' '.join(command), shell=True,
+                              stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+        sp.communicate(stdin)
+    elif format == 'pdf':
+        command[3] = '-A'
+        sp = subprocess.Popen(' '.join(command), shell=True,
+                              stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+        sp.communicate(stdin)
     else:
-        pdffile = StringIO()
-    width = int(svg.props.width/90.*dpi)
-    height = int(svg.props.height/90.*dpi)
-    surface = cairo.PDFSurface(pdffile, width, height)
-    ctx = cairo.Context(surface)
-    ctx.scale(dpi/90., dpi/90.)
-    svg.render_cairo(ctx)
-    if format == "png":
-        surface.write_to_png(filename)
-    surface.finish()
-    pdffile.close()
+        raise Exception("Invalid file format requested")
