@@ -41,7 +41,7 @@ def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
       format = either 'png' or 'pdf'
       dpi = DPI to export PNG with (default: 300)
     """
-    stdin = xmlstring.encode('iso-8859-1')
+    stdin = xmlstring.encode('utf-8')
     command = ['inkscape', '-d', str(dpi), '-e', filename, '/dev/stdin']
     if format == 'png':
         sp = subprocess.Popen(' '.join(command), shell=True,
