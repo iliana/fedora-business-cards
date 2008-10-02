@@ -45,12 +45,14 @@ def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
     command = ['inkscape', '-C -z -d', str(dpi), '-e', filename, '/dev/stdin']
     if format == 'png':
         sp = subprocess.Popen(' '.join(command), shell=True,
-                              stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+                              stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE)
         sp.communicate(stdin)
     elif format == 'pdf':
         command[3] = '-A'
         sp = subprocess.Popen(' '.join(command), shell=True,
-                              stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+                              stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE)
         sp.communicate(stdin)
     else:
         raise Exception("Invalid file format requested")
