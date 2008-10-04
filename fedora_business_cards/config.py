@@ -27,6 +27,7 @@ import os
 
 # locations, in reverse-order of priority
 LOCATIONS = ['/'.join(__file__.split('/')[:-1]+['config.ini']),
+             'config.ini', # in current working directory
              '/usr/share/fedora-business-cards/config.ini',
              '/etc/fedora-business-cards.ini',
              os.getenv('HOME')+'/.fedora-business-cards.ini']
