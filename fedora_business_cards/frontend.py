@@ -146,6 +146,8 @@ def cmdline():
                     lineno == '3' or lineno == '4' or lineno == '5':
                 lines[int(lineno)] = newdata
     # generate front of business card
+    print "Generating front...",
+    sys.stdout.flush()
     xml = generate.gen_front(name, title, lines, options.template)
     if options.output == "svg":
         export.svg_to_file(xml, options.username+'-front.'+options.output)
@@ -153,9 +155,13 @@ def cmdline():
         export.svg_to_pdf_png(xml, options.username+'-front.'+options.output,
                               options.output, options.dpi)
     # generate back of business card
+    print "Generating back...",
+    sys.stdout.flush()
     xml = generate.gen_back(options.template)
     if options.output == "svg":
         export.svg_to_file(xml, options.username+'-back.'+options.output)
     else:
         export.svg_to_pdf_png(xml, options.username+'-back.'+options.output,
                               options.output, options.dpi)
+    print "Done."
+    sys.stdout.flush()
