@@ -4,3 +4,7 @@
 *.pyo
 *.png
 *.svg
+build
+dist
+*.egg-info
+install_root
