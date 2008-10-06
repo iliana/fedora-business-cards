@@ -1,0 +1,1 @@
+include pavement.py config.ini templates/* COPYING fedora-business-cards
