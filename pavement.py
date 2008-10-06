@@ -47,7 +47,7 @@ def install_templates():
                                         "/templates")
         if not os.path.exists(templates_dir):
             templates_dir.makedirs(0755)
-        command = "install -p %s %s" % (template_file, templates_dir)
+        command = "install -cpm 644 %s %s" % (template_file, templates_dir)
         dry(command, paver.runtime.sh, [command])
 
 
@@ -64,5 +64,5 @@ def install_executable():
     bin_dir = paver.path.path(root_dir + options.bin_dir)
     if not os.path.exists(bin_dir):
         bin_dir.makedirs(0755)
-    command = "install -p %s %s" % ("fedora-business-cards", bin_dir)
+    command = "install -cpm 755 %s %s" % ("fedora-business-cards", bin_dir)
     dry(command, paver.runtime.sh, [command])
