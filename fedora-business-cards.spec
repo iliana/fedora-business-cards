@@ -2,13 +2,13 @@
 
 Name:           fedora-business-cards
 Version:        0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A tool for rendering Fedora contributor business cards
 
 Group:          Applications/Multimedia
 License:        GPLv2+
 URL:            https://fedoraproject.org/wiki/Business_cards
-Source0:        https://ianweller.fedorapeople.org/releases/%{name}/%{name}-%{version}.tar.gz
+Source0:        http://ianweller.fedorapeople.org/releases/%{name}/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
@@ -49,5 +49,8 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Oct 06 2008 Ian Weller <ianweller@gmail.com> 0.2-2
+- Fix Source0 URL (fedorapeople.org doesn't do https)
+
 * Mon Oct 06 2008 Ian Weller <ianweller@gmail.com> 0.2-1
 - Initial package build.
