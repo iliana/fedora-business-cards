@@ -17,12 +17,15 @@ options(
     install_templates=Bunch(
         templates=glob("templates/*"),
         data_dir="/usr/share/fedora-business-cards"
+    ),
+    install_executable=Bunch(
+        bin_dir="/usr/bin"
     )
 )
 
 
 @task
-@cmdopts([('root=', 'r', 'install everything relative to this alternative root'
+@cmdopts([('root=', None, 'install everything relative to this alternative root'
            ' directory')])
 def install_templates():
     """install necessary templates for generator"""
@@ -46,3 +49,20 @@ def install_templates():
             templates_dir.makedirs(0755)
         command = "install -p %s %s" % (template_file, templates_dir)
         dry(command, paver.runtime.sh, [command])
+
+
+@task
+@cmdopts([('root=', None, 'install everything relative to this alternative root'
+           ' directory')])
+def install_executable():
+    """install executable for generator"""
+    options.order("install_executable", add_rest=True)
+    try:
+        root_dir = options.root
+    except AttributeError:
+        root_dir = ''
+    bin_dir = paver.path.path(root_dir + options.bin_dir)
+    if not os.path.exists(bin_dir):
+        bin_dir.makedirs(0755)
+    command = "install -p %s %s" % ("fedora-business-cards", bin_dir)
+    dry(command, paver.runtime.sh, [command])
