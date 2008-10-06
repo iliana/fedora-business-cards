@@ -1,0 +1,4 @@
+* Mon Oct 6 2008 Ian Weller <ianweller@gmail.com> 0.2
+Remodularize entire setup, and allow for more frontends, particularly
+graphical ones; it's not written yet, but it will be soon. Released for public
+testing by Fedora contributors; version 0.2.
