@@ -35,6 +35,9 @@ import export
 
 
 def cmdline_card_line(data):
+    """
+    Print a line of the business card for the cmdline frontend.
+    """
     return "| %s%s |" % (data, ' '*(59-len(data)))
 
 
@@ -49,8 +52,8 @@ def cmdline():
     parser.add_option("-d", "--dpi", dest="dpi", default=300, type="int",
                       help="DPI of exported file")
     parser.add_option("-t", "--template", dest="template",
-                      default="northamerica", help="Name of template to use, "+\
-                      "run with --list-templates to see a list")
+                      default="northamerica", help="Name of template to use,"+\
+                      " run with --list-templates to see a list")
     parser.add_option("--list-templates", action="store_true", default=False,
                       dest="listtemplates", help="List available templates")
     parser.add_option("-u", "--username", dest="username", default="",
@@ -98,7 +101,8 @@ def cmdline():
     password = getpass()
     if options.username == "":
         options.username = username
-    infodict = information.get_information(username, password, options.username)
+    infodict = information.get_information(username, password,
+                                           options.username)
     # setup default content
     name = infodict['name']
     title = infodict['title']

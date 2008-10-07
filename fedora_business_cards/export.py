@@ -28,10 +28,11 @@ def svg_to_file(xmlstring, filename):
     """
     Write an SVG to a file.
     """
-    f = file(filename, 'w')
-    f.write(xmlstring.encode('utf-8'))
-    f.close()
+    handle = file(filename, 'w')
+    handle.write(xmlstring.encode('utf-8'))
+    handle.close()
     return True
+
 
 def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
     """
@@ -44,16 +45,16 @@ def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
     stdin = xmlstring.encode('utf-8')
     command = ['inkscape', '-C -z -d', str(dpi), '-e', filename, '/dev/stdin']
     if format == 'png':
-        sp = subprocess.Popen(' '.join(command), shell=True,
-                              stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE)
-        sp.communicate(stdin)
+        proc = subprocess.Popen(' '.join(command), shell=True,
+                                stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        proc.communicate(stdin)
     elif format == 'pdf':
         command[3] = '-A'
-        sp = subprocess.Popen(' '.join(command), shell=True,
-                              stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE)
-        sp.communicate(stdin)
+        proc = subprocess.Popen(' '.join(command), shell=True,
+                                stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        proc.communicate(stdin)
     else:
         raise Exception("Invalid file format requested")
     return True

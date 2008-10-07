@@ -19,8 +19,8 @@
 
 """
 The Fedora business cards generator will generate business cards for Fedora
-contributors. It connects to FAS to retrieve user information and lays it out on
-a SVG, then exports that to a PDF and PNG. Different templates are/will be
+contributors. It connects to FAS to retrieve user information and lays it out
+on a SVG, then exports that to a PDF and PNG. Different templates are/will be
 available for different business card sizes, or different requirements by
 different companies.
 """
