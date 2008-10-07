@@ -2,7 +2,7 @@
 
 Name:           fedora-business-cards
 Version:        0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A tool for rendering Fedora contributor business cards
 
 Group:          Applications/Multimedia
@@ -12,7 +12,7 @@ Source0:        http://ianweller.fedorapeople.org/releases/%{name}/%{name}-%{ver
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
-BuildRequires:  python-paver
+BuildRequires:  python-devel python-paver python-setuptools python-iniparse
 Requires:       mgopen-fonts inkscape PyXML python-iniparse pygpgme python-fedora
 
 
@@ -49,6 +49,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Oct 06 2008 Ian Weller <ianweller@gmail.com> 0.2-3
+- Fix BuildRequires
+
 * Mon Oct 06 2008 Ian Weller <ianweller@gmail.com> 0.2-2
 - Fix Source0 URL (fedorapeople.org doesn't do https)
 
