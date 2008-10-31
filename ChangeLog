@@ -1,3 +1,7 @@
+* Thu Oct 20 2008 Ian Weller <ianweller@gmail.com> 0.2.1
+Add overnightprints templates (same as northamerica with a 1/16" bleed);
+cleaned up python a little bit; version 0.2.1.
+
 * Mon Oct 6 2008 Ian Weller <ianweller@gmail.com> 0.2
 Remodularize entire setup, and allow for more frontends, particularly
 graphical ones; it's not written yet, but it will be soon. Released for public

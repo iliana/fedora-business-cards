@@ -6,7 +6,7 @@ import paver.path
 options(
     setup=Bunch(
         name="fedora-business-cards",
-        version="0.2",
+        version="0.2.1",
         description="A generator for Fedora contributor business cards",
         packages=["fedora_business_cards"],
         author="Ian Weller",

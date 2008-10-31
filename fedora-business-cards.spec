@@ -1,8 +1,8 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           fedora-business-cards
-Version:        0.2
-Release:        3%{?dist}
+Version:        0.2.1
+Release:        1%{?dist}
 Summary:        A tool for rendering Fedora contributor business cards
 
 Group:          Applications/Multimedia
@@ -49,6 +49,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Oct 30 2008 Ian Weller <ianweller@gmail.com> 0.2.1-1
+- Upstream update
+
 * Mon Oct 06 2008 Ian Weller <ianweller@gmail.com> 0.2-3
 - Fix BuildRequires
 
