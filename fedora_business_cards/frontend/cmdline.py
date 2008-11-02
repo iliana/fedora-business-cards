@@ -18,8 +18,8 @@
 ###
 
 """
-Frontend to the business card generator. Theoretically expandable to GUI and
-whatnot, but for now just has a command-line interface.
+Command-line interface to business card generator. Takes no arguments; uses
+optparser.OptionParser instead.
 """
 
 from optparse import OptionParser
@@ -28,10 +28,10 @@ import sys
 from getpass import getpass
 
 # local imports
-import config
-import information
-import generate
-import export
+from .. import config
+from .. import information
+from .. import generate
+from .. import export
 
 
 def cmdline_card_line(data):
@@ -41,10 +41,9 @@ def cmdline_card_line(data):
     return "| %s%s |" % (data, ' '*(59-len(data)))
 
 
-def cmdline():
+def main():
     """
-    Command-line interface to business card generator. Takes no arguments; uses
-    optparser.OptionParser instead.
+    Call this to make things happen.
     """
     # setup option parser
     parser = OptionParser()
