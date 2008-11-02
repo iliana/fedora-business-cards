@@ -14,8 +14,9 @@ options(
         license="GPLv2+",
         url="https://fedoraproject.org/wiki/Business_cards"
     ),
-    install_templates=Bunch(
+    install_data=Bunch(
         templates=glob("templates/*"),
+        ui=glob("ui/*"),
         data_dir="/usr/share/fedora-business-cards"
     ),
     install_executable=Bunch(
@@ -27,9 +28,9 @@ options(
 @task
 @cmdopts([('root=', None, 'install everything relative to this alternative root'
            ' directory')])
-def install_templates():
-    """install necessary templates for generator"""
-    options.order("install_templates", add_rest=True)
+def install_data():
+    """install necessary data for generator"""
+    options.order("install_data", add_rest=True)
     try:
         root_dir = options.root
     except AttributeError:
@@ -38,6 +39,8 @@ def install_templates():
     parser.read("config.ini")
     templates_dir = options.data_dir + "/templates"
     parser.set("location", "templates", templates_dir)
+    ui_dir = options.data_dir + "/ui"
+    parser.set("location", "ui", ui_dir)
     data_dir = paver.path.path(root_dir + options.data_dir)
     if not os.path.exists(data_dir):
         data_dir.makedirs(0755)
@@ -48,6 +51,12 @@ def install_templates():
         if not os.path.exists(templates_dir):
             templates_dir.makedirs(0755)
         command = "install -cpm 644 %s %s" % (template_file, templates_dir)
+        dry(command, paver.runtime.sh, [command])
+    for ui_file in options.ui:
+        ui_dir = paver.path.path(root_dir + options.data_dir + "/ui")
+        if not os.path.exists(ui_dir):
+            templates_dir.makedirs(0755)
+        command = "install -cpm 644 %s %s" % (ui_file, ui_dir)
         dry(command, paver.runtime.sh, [command])
 
 
