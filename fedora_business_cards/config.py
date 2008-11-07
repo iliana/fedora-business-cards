@@ -22,8 +22,33 @@ Controls the locations of configuration files, and imports configurations from
 all those files in a specific order.
 """
 
-import iniparse
+from iniparse import ConfigParser
 import os
+
+
+def available_templates(config):
+    """
+    Takes the main ConfigParser as the argument.
+    """
+    templates_dir = config.get('location', 'templates')
+    templates = ConfigParser()
+    templates.read(templates_dir+"/templates.ini")
+    filelist = os.listdir(templates_dir)
+    for section in templates.sections():
+        if templates.options(section) == ["humandesc", "front", "back", "type"]:
+            if templates.get(section, "front") in filelist:
+                if templates.get(section, "back") in filelist:
+                    # only SVG templates are currently supported
+                    if templates.get(section, "type") == "svg":
+                        continue
+        elif templates.options(section) == ["humandesc", "front", "type"]:
+            if templates.get(section, "front") in filelist:
+                # only SVG templates are currently supported
+                if templates.get(section, "type") == "svg":
+                    continue
+        templates.remove_section(section)
+    return templates
+
 
 # locations, in reverse-order of priority
 LOCATIONS = ['/'.join(__file__.split('/')[:-1]+['config.ini']),
@@ -32,10 +57,9 @@ LOCATIONS = ['/'.join(__file__.split('/')[:-1]+['config.ini']),
              '/etc/fedora-business-cards.ini',
              os.getenv('HOME')+'/.fedora-business-cards.ini']
 
-parser = iniparse.ConfigParser()
-
-# import the configs
+parser = ConfigParser()
 for i in LOCATIONS:
     parser.read(i)
 
-__all__ = ('parser')
+
+__all__ = ('parser', 'available_templates')

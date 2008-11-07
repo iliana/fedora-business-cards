@@ -23,9 +23,6 @@ Generates both sides of the business card.
 
 from xml.dom import minidom
 
-# local imports
-import config
-
 
 def find_node(doc_node, tag_name, attribute_name, attribute_value):
     """
@@ -40,12 +37,11 @@ def find_node(doc_node, tag_name, attribute_name, attribute_value):
                 return element
 
 
-def gen_front(name, title, lines, template="northamerica"):
+def gen_front(name, title, lines, template_loc):
     """
     Generates the front of the business card.
     """
-    dom = minidom.parse(config.parser.get('location', 'templates')+'/front-'+\
-                        template+'.svg')
+    dom = minidom.parse(template_loc)
     namenode = find_node(dom, 'text', 'id', 'fullname')
     namenode.appendChild(dom.createTextNode(name))
     titlenode = find_node(dom, 'text', 'id', 'title')
@@ -56,10 +52,9 @@ def gen_front(name, title, lines, template="northamerica"):
     return dom.toxml()
 
 
-def gen_back(template="northamerica"):
+def gen_back(template_loc):
     """
     Generates the back of the business card.
     """
-    dom = minidom.parse(config.parser.get('location', 'templates')+'/back-'+\
-                        template+'.svg')
+    dom = minidom.parse(template_loc)
     return dom.toxml()

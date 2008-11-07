@@ -69,28 +69,13 @@ def main():
     options = parser.parse_args()[0]
     # check what templates are available
     config.parser.read(options.config_location)
-    templates_dir = config.parser.get('location', 'templates')
-    contents = os.listdir(templates_dir)
-    checked_once = []
-    available_templates = []
-    for i in contents:
-        if i[-4:] == '.svg':
-            if i[:6] == 'front-':
-                name = i[6:-4]
-            elif i[:5] == 'back-':
-                name = i[5:-4]
-            else:
-                continue
-            if name in checked_once:
-                available_templates.append(name)
-            else:
-                checked_once.append(name)
+    templates = config.available_templates(config.parser)
     if options.listtemplates:
         print "Available templates:"
-        for i in available_templates:
-            print "  %s" % i
+        for section in templates.sections():
+            print "  %s (%s)" % (section, templates.get(section, 'humandesc'))
         sys.exit(0)
-    if options.template not in available_templates:
+    if options.template not in templates.sections():
         print "%s not an available template" % options.template
         sys.exit(1)
     # ask for FAS login
@@ -151,10 +136,15 @@ def main():
             elif lineno == '0' or lineno == '1' or lineno == '2' or \
                     lineno == '3' or lineno == '4' or lineno == '5':
                 lines[int(lineno)] = newdata
+    # figure out template locations
+    frontloc = config.parser.get('location', 'templates')+'/'+\
+            templates.get(options.template, 'front')
+    backloc = config.parser.get('location', 'templates')+'/'+\
+            templates.get(options.template, 'back')
     # generate front of business card
     print "Generating front...",
     sys.stdout.flush()
-    xml = generate.gen_front(name, title, lines, options.template)
+    xml = generate.gen_front(name, title, lines, frontloc)
     if options.output == "svg":
         export.svg_to_file(xml, options.username+'-front.'+options.output)
     else:
@@ -163,7 +153,7 @@ def main():
     # generate back of business card
     print "Generating back...",
     sys.stdout.flush()
-    xml = generate.gen_back(options.template)
+    xml = generate.gen_back(backloc)
     if options.output == "svg":
         export.svg_to_file(xml, options.username+'-back.'+options.output)
     else:
