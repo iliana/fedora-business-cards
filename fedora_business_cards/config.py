@@ -35,7 +35,8 @@ def available_templates(config):
     templates.read(templates_dir+"/templates.ini")
     filelist = os.listdir(templates_dir)
     for section in templates.sections():
-        if templates.options(section) == ["humandesc", "front", "back", "type"]:
+        if templates.options(section) == ["humandesc", "front", "back",
+                                          "type"]:
             if templates.get(section, "front") in filelist:
                 if templates.get(section, "back") in filelist:
                     # only SVG templates are currently supported
