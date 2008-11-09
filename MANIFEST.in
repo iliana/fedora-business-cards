@@ -1,1 +1,1 @@
-include pavement.py config.ini templates/* COPYING INSTALL ChangeLog fedora-business-cards
+include pavement.py config.ini templates/* ui/* COPYING INSTALL ChangeLog fedora-business-cards

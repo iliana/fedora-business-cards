@@ -1,7 +1,7 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           fedora-business-cards
-Version:        0.2.1
+Version:        0.2.2
 Release:        1%{?dist}
 Summary:        A tool for rendering Fedora contributor business cards
 
@@ -32,7 +32,7 @@ paver build
 %install
 rm -rf %{buildroot}
 paver install --skip-build --root %{buildroot}
-paver install_templates --root %{buildroot}
+paver install_data --root %{buildroot}
 paver install_executable --root %{buildroot}
 
 
@@ -49,6 +49,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Nov 09 2008 Ian Weller <ianweller@gmail.com> 0.2.2-1
+- Fix coloration in back templates
+
 * Thu Oct 30 2008 Ian Weller <ianweller@gmail.com> 0.2.1-1
 - Upstream update
 

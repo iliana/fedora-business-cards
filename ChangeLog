@@ -1,3 +1,7 @@
+* Sun Oct 09 2008 Ian Weller <ianweller@gmail.com> 0.2.2
+Modularize some things, fix the colors in the back templates, prepare for
+visual branch merge whenever that gets done; version 0.2.2.
+
 * Thu Oct 20 2008 Ian Weller <ianweller@gmail.com> 0.2.1
 Add overnightprints templates (same as northamerica with a 1/16" bleed);
 cleaned up python a little bit; version 0.2.1.
