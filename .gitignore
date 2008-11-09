@@ -3,6 +3,8 @@
 *.pyc
 *.pyo
 *.png
+*.tif
+*.tiff
 *.svg
 build
 dist
