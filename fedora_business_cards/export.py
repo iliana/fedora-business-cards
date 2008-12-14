@@ -39,7 +39,7 @@ def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
     Export an SVG to either a PDF or PNG.
       xmlstring = the SVG XML to export
       filename = name of file to save as
-      format = either 'png' or 'pdf'
+      format = either 'png', 'pdf', or 'eps'
       dpi = DPI to export PNG with (default: 300)
     """
     stdin = xmlstring.encode('utf-8')
@@ -51,6 +51,13 @@ def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
         proc.communicate(stdin)
     elif format == 'pdf':
         command[3] = '-A'
+        proc = subprocess.Popen(' '.join(command), shell=True,
+                                stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        proc.communicate(stdin)
+    elif format == 'eps':
+        command[1] = '-C -z -T -B -d'
+        command[3] = '-E'
         proc = subprocess.Popen(' '.join(command), shell=True,
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)

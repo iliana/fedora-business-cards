@@ -64,6 +64,8 @@ def main():
                       action="store_const", help="Export as PNG (default)")
     parser.add_option("--svg", dest="output", default="png", const="svg",
                       action="store_const", help="Export as SVG")
+    parser.add_option("--eps", dest="output", default="png", const="eps",
+                      action="store_const", help="Export as EPS")
     parser.add_option("-c", "--config", dest="config_location", default="",
                       help="Location of config.ini configuration file")
     options = parser.parse_args()[0]
