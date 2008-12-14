@@ -1,3 +1,6 @@
+* Sun Dec 14 2008 Ian Weller <ianweller@gmail.com> 0.2.3
+Add EPS as an export option; version 0.2.3.
+
 * Sun Oct 09 2008 Ian Weller <ianweller@gmail.com> 0.2.2
 Modularize some things, fix the colors in the back templates, prepare for
 visual branch merge whenever that gets done; version 0.2.2.

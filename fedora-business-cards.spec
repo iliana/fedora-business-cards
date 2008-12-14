@@ -1,9 +1,9 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           fedora-business-cards
-Version:        0.2.2
+Version:        0.2.3
 Release:        1%{?dist}
-Summary:        A tool for rendering Fedora contributor business cards
+Summary:        The Fedora business card generator
 
 Group:          Applications/Multimedia
 License:        GPLv2+
@@ -49,6 +49,15 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Dec 14 2008 Ian Weller <ianweller@gmail.com> 0.2.3-1
+- Add EPS as an export option
+
+* Sun Dec 14 2008 Ian Weller <ianweller@gmail.com> 0.2.2-3
+- Change summary to be more helpful
+
+* Sat Nov 29 2008 Ignacio Vazquez-Abrams <ivazqueznet+rpm@gmail.com> - 0.2.2-2
+- Rebuild for Python 2.6
+
 * Sun Nov 09 2008 Ian Weller <ianweller@gmail.com> 0.2.2-1
 - Fix coloration in back templates
 
