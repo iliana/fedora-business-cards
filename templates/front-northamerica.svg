@@ -13,16 +13,23 @@
   <defs
      id="defs4">
     <foreignObject
-       requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/"
-       x="0"
-       y="0"
-       width="1"
+       id="foreignObject8"
        height="1"
-       id="foreignObject8">
+       width="1"
+       y="0"
+       x="0"
+       requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/">
       <i:pgfRef
          xlink:href="#adobe_illustrator_pgf" />
     </foreignObject>
   </defs>
+  <rect
+     width="315"
+     height="180"
+     x="0"
+     y="1.9248492e-14"
+     id="rect2409"
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   <rect
      width="18"
      height="180"
