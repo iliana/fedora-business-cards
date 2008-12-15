@@ -22,6 +22,14 @@ Functions to export cards from SVGs.
 """
 
 import subprocess
+import math
+
+RGB_TO_CMYK = (
+    ("0 0 0", "0 0 0 1"),
+    ("1 1 1", "0 0 0 0"),
+    ("0.23529412 0.43137255 0.70588237", "1 0.46 0 0"),
+    ("0.16078432 0.25490198 0.44705883", "1 0.57 0 0.38"),
+)
 
 
 def svg_to_file(xmlstring, filename):
@@ -64,4 +72,36 @@ def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
         proc.communicate(stdin)
     else:
         raise Exception("Invalid file format requested")
+    return True
+
+
+def svg_to_cmyk_pdf(xmlstring, filename, dpi=300, converter=RGB_TO_CMYK):
+    """
+    Export an SVG to a PDF while converting to CMYK.
+      xmlstring = the SVG XML to export
+      filename = name of file to save as
+      dpi = DPI to export PDF with (default: 300)
+      converter = a tuple of tuples to convert from RGB to CMYK colors. see
+                  RGB_TO_CMYK for an example
+    """
+    stdin = xmlstring.encode('utf-8')
+    command = "inkscape -C -z -T -B -E /dev/stdout /dev/stdin"
+    proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    eps = proc.communicate(stdin)[0]
+    for that in converter:
+        eps = eps.replace("\n%s setrgbcolor" % that[0],
+                          "\n%s setcmykcolor" % that[1])
+    command = "inkscape -z -W /dev/stdin"
+    proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    width = str(int(math.ceil(float(proc.communicate(stdin)[0])*dpi/90)))
+    command = "inkscape -z -H /dev/stdin"
+    proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    height = str(int(math.ceil(float(proc.communicate(stdin)[0])*dpi/90)))
+    command = "gs -q -sDEVICE=pdfwrite -dAutoRotatePages=/None -r%s -g%sx%s -sOutputFile='%s' - -c quit" % (str(dpi), width, height, filename)
+    proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc.communicate(eps)
     return True

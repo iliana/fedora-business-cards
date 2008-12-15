@@ -3,6 +3,8 @@
 *.pyc
 *.pyo
 *.png
+*.pdf
+*.eps
 *.tif
 *.tiff
 *.svg

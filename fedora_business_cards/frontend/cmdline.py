@@ -66,6 +66,9 @@ def main():
                       action="store_const", help="Export as SVG")
     parser.add_option("--eps", dest="output", default="png", const="eps",
                       action="store_const", help="Export as EPS")
+    parser.add_option("--cmyk-pdf", dest="output", default="png",
+                      const="cmyk_pdf", action="store_const",
+                      help="Export as PDF with CMYK color")
     parser.add_option("-c", "--config", dest="config_location", default="",
                       help="Location of config.ini configuration file")
     options = parser.parse_args()[0]
@@ -149,6 +152,8 @@ def main():
     xml = generate.gen_front(name, title, lines, frontloc)
     if options.output == "svg":
         export.svg_to_file(xml, options.username+'-front.'+options.output)
+    elif options.output == "cmyk_pdf":
+        export.svg_to_cmyk_pdf(xml, options.username+'-front.pdf')
     else:
         export.svg_to_pdf_png(xml, options.username+'-front.'+options.output,
                               options.output, options.dpi)
@@ -158,6 +163,8 @@ def main():
     xml = generate.gen_back(backloc)
     if options.output == "svg":
         export.svg_to_file(xml, options.username+'-back.'+options.output)
+    elif options.output == "cmyk_pdf":
+        export.svg_to_cmyk_pdf(xml, options.username+'-back.pdf')
     else:
         export.svg_to_pdf_png(xml, options.username+'-back.'+options.output,
                               options.output, options.dpi)
