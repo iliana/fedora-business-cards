@@ -1,7 +1,7 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           fedora-business-cards
-Version:        0.2.3
+Version:        0.2.4
 Release:        1%{?dist}
 Summary:        The Fedora business card generator
 
@@ -13,7 +13,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
 BuildRequires:  python-devel python-paver python-setuptools python-iniparse
-Requires:       mgopen-fonts inkscape PyXML python-iniparse pygpgme python-fedora
+Requires:       mgopen-fonts inkscape PyXML python-iniparse pygpgme python-fedora ghostscript
 
 
 %description
@@ -49,6 +49,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Dec 21 2008 Ian Weller <ianweller@gmail.com> 0.2.4-1
+- Add CMYK PDF as an export option
+
 * Sun Dec 14 2008 Ian Weller <ianweller@gmail.com> 0.2.3-1
 - Add EPS as an export option
 
