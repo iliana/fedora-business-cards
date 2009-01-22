@@ -2,7 +2,7 @@
 
 Name:           fedora-business-cards
 Version:        0.2.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The Fedora business card generator
 
 Group:          Applications/Multimedia
@@ -17,7 +17,7 @@ Requires:       inkscape PyXML python-iniparse pygpgme python-fedora ghostscript
 %if 0%{fedora} < 11
 Requires:       mgopen-fonts
 %else
-Requires:       mgopen-fonts-modata mgopen-fonts-moderna
+Requires:       mgopen-modata-fonts mgopen-moderna-fonts
 %endif
 
 
@@ -54,6 +54,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Jan 21 2009 Ian Weller <ianweller@gmail.com> 0.2.4-3
+- Fix F11 dependency on the MgOpen fonts (again)
+
 * Wed Dec 31 2008 Ian Weller <ianweller@gmail.com> 0.2.4-2
 - Fix F11 dependency on the MgOpen fonts
 
