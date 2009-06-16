@@ -26,6 +26,12 @@ import math
 import os
 
 RGB_TO_CMYK = (
+    # Inkscape .46 output
+    ("0 0 0 setrgbcolor", "0 0 0 1"),
+    ("1 1 1 setrgbcolor", "0 0 0 0"),
+    ("0.23529412 0.43137255 0.70588237 setrgbcolor", "1 0.46 0 0"),
+    ("0.16078432 0.25490198 0.44705883 setrgbcolor", "1 0.57 0 0.38"),
+    # Inkscape .47 output
     ("0 g", "0 0 0 1"),
     ("1 g", "0 0 0 0"),
     ("0.235294 0.431373 0.705882 rg", "1 0.46 0 0"),
