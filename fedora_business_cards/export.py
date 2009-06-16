@@ -61,13 +61,14 @@ def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
                                 stderr=subprocess.PIPE)
         proc.communicate()
     elif format == 'pdf':
+        command[1] = '-C -z -T -d'
         command[3] = '-A'
         proc = subprocess.Popen(' '.join(command), shell=True,
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
         proc.communicate()
     elif format == 'eps':
-        command[1] = '-C -z -d'
+        command[1] = '-C -z -T -d'
         command[3] = '-E'
         proc = subprocess.Popen(' '.join(command), shell=True,
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
@@ -90,7 +91,7 @@ def svg_to_cmyk_pdf(xmlstring, filename, dpi=300, converter=RGB_TO_CMYK):
     svgfilename = "/tmp/fedora-business-cards-buffer.svg"
     filename = os.path.join(os.getenv("PWD"), filename)
     svg_to_file(xmlstring, svgfilename)
-    command = "inkscape -C -z -E /dev/stdout %s" % svgfilename
+    command = "inkscape -C -z -T -E /dev/stdout %s" % svgfilename
     proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     eps = proc.communicate()[0]
