@@ -23,12 +23,13 @@ Functions to export cards from SVGs.
 
 import subprocess
 import math
+import os
 
 RGB_TO_CMYK = (
-    ("0 0 0", "0 0 0 1"),
-    ("1 1 1", "0 0 0 0"),
-    ("0.23529412 0.43137255 0.70588237", "1 0.46 0 0"),
-    ("0.16078432 0.25490198 0.44705883", "1 0.57 0 0.38"),
+    ("0 g", "0 0 0 1"),
+    ("1 g", "0 0 0 0"),
+    ("0.235294 0.431373 0.705882 rg", "1 0.46 0 0"),
+    ("0.160784 0.254902 0.447059 rg", "1 0.57 0 0.38"),
 )
 
 
@@ -50,26 +51,28 @@ def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
       format = either 'png', 'pdf', or 'eps'
       dpi = DPI to export PNG with (default: 300)
     """
-    stdin = xmlstring.encode('utf-8')
-    command = ['inkscape', '-C -z -d', str(dpi), '-e', filename, '/dev/stdin']
+    svgfilename = "/tmp/fedora-business-cards-buffer.svg"
+    filename = os.path.join(os.getenv("PWD"), filename)
+    svg_to_file(xmlstring, svgfilename)
+    command = ['inkscape', '-C -z -d', str(dpi), '-e', filename, svgfilename]
     if format == 'png':
         proc = subprocess.Popen(' '.join(command), shell=True,
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
-        proc.communicate(stdin)
+        proc.communicate()
     elif format == 'pdf':
         command[3] = '-A'
         proc = subprocess.Popen(' '.join(command), shell=True,
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
-        proc.communicate(stdin)
+        proc.communicate()
     elif format == 'eps':
-        command[1] = '-C -z -T -B -d'
+        command[1] = '-C -z -d'
         command[3] = '-E'
         proc = subprocess.Popen(' '.join(command), shell=True,
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
-        proc.communicate(stdin)
+        proc.communicate()
     else:
         raise Exception("Invalid file format requested")
     return True
@@ -84,22 +87,24 @@ def svg_to_cmyk_pdf(xmlstring, filename, dpi=300, converter=RGB_TO_CMYK):
       converter = a tuple of tuples to convert from RGB to CMYK colors. see
                   RGB_TO_CMYK for an example
     """
-    stdin = xmlstring.encode('utf-8')
-    command = "inkscape -C -z -T -B -E /dev/stdout /dev/stdin"
+    svgfilename = "/tmp/fedora-business-cards-buffer.svg"
+    filename = os.path.join(os.getenv("PWD"), filename)
+    svg_to_file(xmlstring, svgfilename)
+    command = "inkscape -C -z -E /dev/stdout %s" % svgfilename
     proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    eps = proc.communicate(stdin)[0]
+    eps = proc.communicate()[0]
     for that in converter:
-        eps = eps.replace("\n%s setrgbcolor" % that[0],
+        eps = eps.replace("\n%s" % that[0],
                           "\n%s setcmykcolor" % that[1])
-    command = "inkscape -z -W /dev/stdin"
+    command = "inkscape -z -W %s" % svgfilename
     proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    width = str(int(math.ceil(float(proc.communicate(stdin)[0])*dpi/90)))
-    command = "inkscape -z -H /dev/stdin"
+    width = str(int(math.ceil(float(proc.communicate()[0])*dpi/90)))
+    command = "inkscape -z -H %s" % svgfilename
     proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    height = str(int(math.ceil(float(proc.communicate(stdin)[0])*dpi/90)))
+    height = str(int(math.ceil(float(proc.communicate()[0])*dpi/90)))
     command = "gs -q -sDEVICE=pdfwrite -dAutoRotatePages=/None -r%s -g%sx%s -sOutputFile='%s' - -c quit" % (str(dpi), width, height, filename)
     proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
