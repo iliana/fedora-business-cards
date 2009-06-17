@@ -2,15 +2,19 @@ from glob import glob
 import iniparse
 import os
 import paver.path
+from paver.easy import *
+import paver.setuputils
+
+paver.setuputils.install_distutils_tasks()
 
 options(
     setup=Bunch(
         name="fedora-business-cards",
-        version="0.2.4.1",
+        version="0.2.4.2",
         description="A generator for Fedora contributor business cards",
         packages=["fedora_business_cards", "fedora_business_cards.frontend"],
         author="Ian Weller",
-        author_email="ianweller@gmail.com",
+        author_email="ian@ianweller.org",
         license="GPLv2+",
         url="https://fedoraproject.org/wiki/Business_cards"
     ),
@@ -51,7 +55,7 @@ def install_data():
         if not os.path.exists(templates_dir):
             templates_dir.makedirs(0755)
         command = "install -cpm 644 %s %s" % (template_file, templates_dir)
-        dry(command, paver.runtime.sh, [command])
+        dry(command, sh, command)
     for ui_file in options.ui:
         ui_dir = paver.path.path(root_dir + options.data_dir + "/ui")
         if not os.path.exists(ui_dir):
@@ -74,4 +78,4 @@ def install_executable():
     if not os.path.exists(bin_dir):
         bin_dir.makedirs(0755)
     command = "install -cpm 755 %s %s" % ("fedora-business-cards", bin_dir)
-    dry(command, paver.runtime.sh, [command])
+    dry(command, sh, command)
