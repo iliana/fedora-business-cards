@@ -1,8 +1,8 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           fedora-business-cards
-Version:        0.2.4
-Release:        3%{?dist}
+Version:        0.2.4.1
+Release:        1%{?dist}
 Summary:        The Fedora business card generator
 
 Group:          Applications/Multimedia
@@ -54,6 +54,12 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Jun 17 2009 Ian Weller <ian@ianweller.org> - 0.2.4.1-1
+- Fix bug #502338 (fedora-business-cards generate no PNG)
+
+* Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.4-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Wed Jan 21 2009 Ian Weller <ianweller@gmail.com> 0.2.4-3
 - Fix F11 dependency on the MgOpen fonts (again)
 
