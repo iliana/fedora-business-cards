@@ -2,7 +2,7 @@
 
 Name:           fedora-business-cards
 Version:        0.2.4.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Fedora business card generator
 
 Group:          Applications/Multimedia
@@ -13,11 +13,18 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
 BuildRequires:  python-devel python-paver python-setuptools python-iniparse
-Requires:       inkscape PyXML python-iniparse pygpgme python-fedora ghostscript
+Requires:       PyXML python-iniparse pygpgme python-fedora ghostscript
+
 %if 0%{fedora} < 11
 Requires:       mgopen-fonts
 %else
 Requires:       mgopen-modata-fonts mgopen-moderna-fonts
+%endif
+
+%if 0%{fedora} >= 11
+Requires:       inkscape >= 0.47-0.11.20090602svn
+%else
+Requires:       inkscape
 %endif
 
 
@@ -54,6 +61,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Jun 17 2009 Ian Weller <ian@ianweller.org> - 0.2.4.2-2
+- Add an appropriate conditional require for inkscape
+
 * Wed Jun 17 2009 Ian Weller <ian@ianweller.org> - 0.2.4.2-1
 - Fix pavement.py issues
 
