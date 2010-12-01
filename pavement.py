@@ -10,7 +10,7 @@ paver.setuputils.install_distutils_tasks()
 options(
     setup=Bunch(
         name="fedora-business-cards",
-        version="0.2.4.2",
+        version="0.2.4.3",
         description="A generator for Fedora contributor business cards",
         packages=["fedora_business_cards", "fedora_business_cards.frontend"],
         author="Ian Weller",

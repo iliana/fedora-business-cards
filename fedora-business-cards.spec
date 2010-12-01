@@ -1,8 +1,8 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           fedora-business-cards
-Version:        0.2.4.2
-Release:        2%{?dist}
+Version:        0.2.4.3
+Release:        1%{?dist}
 Summary:        The Fedora business card generator
 
 Group:          Applications/Multimedia
@@ -61,6 +61,18 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Nov 30 2010 Ian Weller <ian@ianweller.org> - 0.2.4.3-1
+- Add template for the Europe business card size
+
+* Sun Jul 25 2010 Ian Weller <iweller@redhat.com> - 0.2.4.2-5
+- Rebuilt again for https://fedoraproject.org/wiki/Features/Python_2.7/MassRebuild
+
+* Wed Jul 21 2010 David Malcolm <dmalcolm@redhat.com> - 0.2.4.2-4
+- Rebuilt for https://fedoraproject.org/wiki/Features/Python_2.7/MassRebuild
+
+* Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.4.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
 * Wed Jun 17 2009 Ian Weller <ian@ianweller.org> - 0.2.4.2-2
 - Add an appropriate conditional require for inkscape
 
