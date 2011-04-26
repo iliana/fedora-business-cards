@@ -149,7 +149,8 @@ def main():
     # generate front of business card
     print "Generating front...",
     sys.stdout.flush()
-    xml = generate.gen_front(name, title, lines, frontloc)
+    name_utf8 = name.decode('utf-8')
+    xml = generate.gen_front(name_utf8, title, lines, frontloc)
     if options.output == "svg":
         export.svg_to_file(xml, options.username+'-front.'+options.output)
     elif options.output == "cmyk_pdf":
