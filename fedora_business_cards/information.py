@@ -57,7 +57,6 @@ def get_information(loginname, password, username=None):
     infodict['name'] = userinfo["human_name"]
     infodict['title'] = "Fedora Project Contributor"
     infodict['email'] = "%s@fedoraproject.org" % username
-    infodict['phone'] = "(919) 424-0063 x 5%s" % userinfo['id']
     infodict['url'] = 'fedoraproject.org'
     infodict['gpgid'] = userinfo['gpg_keyid']
     infodict['irc'] = userinfo['ircnick']

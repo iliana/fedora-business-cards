@@ -101,18 +101,18 @@ def main():
         gpg = "GPG key ID: %s" % infodict['gpgid']
     if infodict['irc'] == None:
         lines = [infodict['email'],
-                 infodict['phone'],
                  infodict['url'],
                  '',
                  gpg,
+                 '',
                  '']
     else:
         lines = [infodict['email'],
-                 infodict['phone'],
                  infodict['irc']+" on irc.freenode.net",
                  infodict['url'],
                  '',
-                 "GPG key ID: "+infodict['gpgid']]
+                 "GPG key ID: "+infodict['gpgid'],
+                 '']
     done_editing = False
     while not done_editing:
         print "Current business card layout:"
