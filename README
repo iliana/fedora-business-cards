@@ -1,5 +1,6 @@
 fedora-business-cards - for rendering Fedora contributor business cards
-Copyright (C) 2008  Ian Weller <ianweller@gmail.com>
+Copyright (C) 2011  Red Hat, Inc.
+Primary maintainer: Ian Weller <iweller@redhat.com>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,14 +21,4 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 Most of the modules are self-documenting, and running the fedora-business-cards
 executable makes things significantly easier. The executable uses the cmdline
 frontend in fedora_business_cards.frontend, complete with optparse and all that
-fun stuff. However, even with it being easy to use, I'll soon be writing
-documentation to make it more clear on how to write your own frontend, if you
-like; theoretically, you don't even need to include it in frontend.py, but it'd
-certainly be nice.
-
-Known bugs:
-* certain glyphs aren't yet available in MgOpen Moderna. The art team is
-  working on that.
-
--- Ian Weller
-   Oct 2008
+fun stuff.

@@ -1,6 +1,7 @@
 ###
 # fedora-business-cards - for rendering Fedora contributor business cards
-# Copyright (C) 2008  Ian Weller <ianweller@gmail.com>
+# Copyright (C) 2011  Red Hat, Inc.
+# Primary maintainer: Ian Weller <iweller@redhat.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,6 +26,8 @@ import subprocess
 import math
 import os
 
+from fedora_business_cards.generate import convert
+
 RGB_TO_CMYK = (
     # Inkscape .46 output
     ("0 0 0 setrgbcolor", "0 0 0 1"),
@@ -39,6 +42,19 @@ RGB_TO_CMYK = (
 )
 
 
+def run_command(args, stdin=None):
+    """
+    Run a command with subprocess.
+    """
+    #print subprocess.list2cmdline(args)
+    proc = subprocess.Popen(args, stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if stdin:
+        return proc.communicate(stdin)
+    else:
+        return proc.communicate()
+
+
 def svg_to_file(xmlstring, filename):
     """
     Write an SVG to a file.
@@ -49,43 +65,33 @@ def svg_to_file(xmlstring, filename):
     return True
 
 
-def svg_to_pdf_png(xmlstring, filename, format='png', dpi=300):
+def svg_to_pdf_png(xmlstring, filename, output_format='png', dpi=300):
     """
     Export an SVG to either a PDF or PNG.
       xmlstring = the SVG XML to export
       filename = name of file to save as
-      format = either 'png', 'pdf', or 'eps'
+      output_format = either 'png', 'pdf', or 'eps'
       dpi = DPI to export PNG with (default: 300)
     """
     svgfilename = "/tmp/fedora-business-cards-buffer.svg"
     filename = os.path.join(os.getenv("PWD"), filename)
     svg_to_file(xmlstring, svgfilename)
-    command = ['inkscape', '-C -z -d', str(dpi), '-e', filename, svgfilename]
-    if format == 'png':
-        proc = subprocess.Popen(' '.join(command), shell=True,
-                                stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
-        proc.communicate()
-    elif format == 'pdf':
-        command[1] = '-C -z -T -d'
-        command[3] = '-A'
-        proc = subprocess.Popen(' '.join(command), shell=True,
-                                stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
-        proc.communicate()
-    elif format == 'eps':
-        command[1] = '-C -z -T -d'
-        command[3] = '-E'
-        proc = subprocess.Popen(' '.join(command), shell=True,
-                                stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
-        proc.communicate()
+    if output_format == 'png':
+        run_command(['inkscape', '-C', '-z', '-d', str(dpi), '-e', filename,
+                     svgfilename])
+    elif output_format == 'pdf':
+        run_command(['inkscape', '-C', '-z', '-T', '-A', filename,
+                     svgfilename])
+    elif output_format == 'eps':
+        run_command(['inkscape', '-C', '-z', '-T', '-E', filename,
+                     svgfilename])
     else:
         raise Exception("Invalid file format requested")
     return True
 
 
-def svg_to_cmyk_pdf(xmlstring, filename, dpi=300, converter=RGB_TO_CMYK):
+def svg_to_cmyk_pdf(xmlstring, filename, user_height, user_width, user_bleed,
+                    unit, dpi=300, converter=RGB_TO_CMYK):
     """
     Export an SVG to a PDF while converting to CMYK.
       xmlstring = the SVG XML to export
@@ -97,23 +103,17 @@ def svg_to_cmyk_pdf(xmlstring, filename, dpi=300, converter=RGB_TO_CMYK):
     svgfilename = "/tmp/fedora-business-cards-buffer.svg"
     filename = os.path.join(os.getenv("PWD"), filename)
     svg_to_file(xmlstring, svgfilename)
-    command = "inkscape -C -z -T -E /dev/stdout %s" % svgfilename
-    proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    eps = proc.communicate()[0]
+    args = ['inkscape', '-C', '-z', '-T', '-E', '/dev/stdout', svgfilename]
+    eps = run_command(args)[0]
     for that in converter:
         eps = eps.replace("\n%s" % that[0],
                           "\n%s setcmykcolor" % that[1])
-    command = "inkscape -z -W %s" % svgfilename
-    proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    width = str(int(math.ceil(float(proc.communicate()[0])*dpi/90)))
-    command = "inkscape -z -H %s" % svgfilename
-    proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    height = str(int(math.ceil(float(proc.communicate()[0])*dpi/90)))
-    command = "gs -q -sDEVICE=pdfwrite -dAutoRotatePages=/None -r%s -g%sx%s -sOutputFile='%s' - -c quit" % (str(dpi), width, height, filename)
-    proc = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE,
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    proc.communicate(eps)
+    width = int(math.ceil(convert(user_width + (user_bleed * 2), unit, 'in') *
+                          dpi))
+    height = int(math.ceil(convert(user_height + (user_bleed * 2), unit, 'in')
+                           * dpi))
+    args = ['gs', '-q', '-sDEVICE=pdfwrite', '-dAutoRotatePages=/None',
+            '-r%s' % dpi, '-g%sx%s' % (width, height),
+            '-sOutputFile=%s' % filename, '-', '-c', 'quit']
+    print run_command(args, eps)[0]
     return True

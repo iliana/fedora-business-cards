@@ -1,7 +1,5 @@
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-
 Name:           fedora-business-cards
-Version:        0.2.4.3
+Version:        0.3
 Release:        1%{?dist}
 Summary:        The Fedora business card generator
 
@@ -13,19 +11,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
 BuildRequires:  python-devel python-paver python-setuptools python-iniparse
-Requires:       PyXML python-iniparse pygpgme python-fedora ghostscript
-
-%if 0%{fedora} < 11
-Requires:       mgopen-fonts
-%else
-Requires:       mgopen-modata-fonts mgopen-moderna-fonts
-%endif
-
-%if 0%{fedora} >= 11
-Requires:       inkscape >= 0.47-0.11.20090602svn
-%else
-Requires:       inkscape
-%endif
+Requires:       PyXML python-fedora ghostscript inkscape aajohan-comfortaa-fonts abattis-cantarell-fonts
+Requires:       fedora-logos > 14.0.2-1
 
 
 %description
@@ -44,7 +31,6 @@ paver build
 %install
 rm -rf %{buildroot}
 paver install --skip-build --root %{buildroot}
-paver install_data --root %{buildroot}
 paver install_executable --root %{buildroot}
 
 
@@ -57,10 +43,16 @@ rm -rf %{buildroot}
 %doc README COPYING
 %{python_sitelib}/*
 %{_bindir}/%{name}
-%{_datadir}/%{name}
 
 
 %changelog
+* Thu Jun 16 2011 Ian Weller <ian@ianweller.org> - 0.3-1
+- Cards are no longer generated from templates, but are instead generated completely from scratch
+- Users can now specify a card size and, optionally, a print bleed in inches or millimeters (RHBZ #480133)
+- Cards now use Cantarell and Comfortaa (RHBZ #700397)
+- Removes Fedora Talk number (RHBZ #703202)
+- Applies Unicode patch from Arturo Fernandez (RHBZ #557001)
+
 * Tue Nov 30 2010 Ian Weller <ian@ianweller.org> - 0.2.4.3-1
 - Add template for the Europe business card size
 

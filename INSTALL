@@ -1,7 +1,7 @@
 Make sure you have the following packages from yum:
-  mgopen-fonts inkscape PyXML python-iniparse pygpgme python-fedora python-paver
+  aajohan-comfortaa-fonts abattis-cantarell-fonts inkscape PyXML python-fedora python-paver
 
 Then run:
-  paver install install_templates install_executable
+  paver install install_executable
 
 Done!

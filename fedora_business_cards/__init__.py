@@ -1,6 +1,7 @@
 ###
 # fedora-business-cards - for rendering Fedora contributor business cards
-# Copyright (C) 2008  Ian Weller <ianweller@gmail.com>
+# Copyright (C) 2011  Red Hat, Inc.
+# Primary maintainer: Ian Weller <iweller@redhat.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,10 +21,10 @@
 """
 The Fedora business cards generator will generate business cards for Fedora
 contributors. It connects to FAS to retrieve user information and lays it out
-on a SVG, then exports that to a PDF and PNG. Different templates are/will be
-available for different business card sizes, or different requirements by
-different companies.
+on a SVG, then exports that to a PDF and PNG.
 """
 
-__all__ = ('config', 'exceptions', 'export', 'frontend', 'generate',
-           'information')
+from pkg_resources import get_distribution, DistributionNotFound
+
+__version__ = '0.3'
+__all__ = ('export', 'frontend', 'generate', 'information')

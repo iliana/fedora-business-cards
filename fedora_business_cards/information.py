@@ -1,6 +1,7 @@
 ###
 # fedora-business-cards - for rendering Fedora contributor business cards
-# Copyright (C) 2008  Ian Weller <ianweller@gmail.com>
+# Copyright (C) 2011  Red Hat, Inc.
+# Primary maintainer: Ian Weller <iweller@redhat.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,29 +19,12 @@
 ###
 
 """
-Assembles information about a person from FAS and their GPG key.
+Assembles information about a person from FAS.
 """
 
 from fedora.client.fas2 import AccountSystem
-import gpgme
-import re
 
-# local imports
-import exceptions
-
-
-def get_gpg_fingerprint(keyid):
-    """
-    Gets the GPG fingerprint from the key ID.
-    """
-    ctx = gpgme.Context()
-    try:
-        key = ctx.get_key(keyid)
-    except:
-        raise exceptions.NoGPGKeyError(keyid)
-    fpr = key.subkeys[0].fpr
-    return ' '.join([i for i in re.split('([A-Z0-9]{4})', fpr) if i])
-
+from fedora_business_cards import __version__
 
 def get_information(loginname, password, username=None):
     """
@@ -51,7 +35,8 @@ def get_information(loginname, password, username=None):
     """
     if username == None:
         username = loginname
-    fas = AccountSystem(username=loginname, password=password)
+    fas = AccountSystem(username=loginname, password=password,
+                        useragent='fedora-business-cards/%s' % __version__)
     userinfo = fas.person_by_username(username)
     infodict = {}
     infodict['name'] = userinfo["human_name"]

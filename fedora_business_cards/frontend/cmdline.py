@@ -1,6 +1,7 @@
 ###
 # fedora-business-cards - for rendering Fedora contributor business cards
-# Copyright (C) 2008  Ian Weller <ianweller@gmail.com>
+# Copyright (C) 2011  Red Hat, Inc.
+# Primary maintainer: Ian Weller <iweller@redhat.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,17 +23,34 @@ Command-line interface to business card generator. Takes no arguments; uses
 optparser.OptionParser instead.
 """
 
-from optparse import OptionParser
-import os
-import sys
+from copy import copy
+import decimal
 from getpass import getpass
+from optparse import OptionParser, OptionGroup, Option, OptionValueError
+import sys
 
-# local imports
-from .. import config
-from .. import information
-from .. import generate
-from .. import export
+from fedora_business_cards import information
+from fedora_business_cards import generate
+from fedora_business_cards import export # hah
 
+
+def check_decimal(option, opt, value):
+    """
+    Checks that value can be converted to a decimal.Decimal object.
+    """
+    try:
+        return decimal.Decimal(value)
+    except decimal.InvalidOperation:
+        return OptionValueError("option %s: invalid decimal value: %s" %
+                                (opt, value))
+
+class NewOptionClass(Option):
+    """
+    Replacement Option class for OptionParser that includes decimal type.
+    """
+    TYPES = Option.TYPES + ("decimal",)
+    TYPE_CHECKER = copy(Option.TYPE_CHECKER)
+    TYPE_CHECKER["decimal"] = check_decimal
 
 def cmdline_card_line(data):
     """
@@ -40,49 +58,56 @@ def cmdline_card_line(data):
     """
     return "| %s%s |" % (data, ' '*(59-len(data)))
 
-
 def main():
     """
     Call this to make things happen.
     """
-    # setup option parser
-    parser = OptionParser()
+    # Setup option parser
+    parser = OptionParser(option_class=NewOptionClass)
     parser.usage = "%prog [options]"
-    parser.add_option("-d", "--dpi", dest="dpi", default=300, type="int",
-                      help="DPI of exported file")
-    parser.add_option("-t", "--template", dest="template",
-                      default="northamerica", help="Name of template to use,"+\
-                      " run with --list-templates to see a list")
-    parser.add_option("--list-templates", action="store_true", default=False,
-                      dest="listtemplates", help="List available templates")
+    # Create decimal type
+    # Base options
     parser.add_option("-u", "--username", dest="username", default="",
                       help="If set, use a different name than the one logged"+\
                       " in with to fill out business card information")
-    parser.add_option("--pdf", dest="output", default="png", const="pdf",
-                      action="store_const", help="Export as PDF")
-    parser.add_option("--png", dest="output", default="png", const="png",
-                      action="store_const", help="Export as PNG (default)")
-    parser.add_option("--svg", dest="output", default="png", const="svg",
-                      action="store_const", help="Export as SVG")
-    parser.add_option("--eps", dest="output", default="png", const="eps",
-                      action="store_const", help="Export as EPS")
-    parser.add_option("--cmyk-pdf", dest="output", default="png",
-                      const="cmyk_pdf", action="store_const",
-                      help="Export as PDF with CMYK color")
-    parser.add_option("-c", "--config", dest="config_location", default="",
-                      help="Location of config.ini configuration file")
+    # Size options
+    size_group = OptionGroup(parser, "Size options")
+    size_group.add_option("--height", dest="height",
+                          default=decimal.Decimal("2"), type="decimal",
+                          help="business card height (default: 2)")
+    size_group.add_option("--width", dest="width",
+                          default=decimal.Decimal("3.5"), type="decimal",
+                          help="business card width (default: 3.5)")
+    size_group.add_option("--bleed", dest="bleed", type="decimal", 
+                          default=decimal.Decimal("0"), help="extra space "
+                          "around card, often requested by printers "
+                          "(default: 0)")
+    size_group.add_option("--inch", dest="unit", default="in", const="in",
+                          action="store_const",
+                          help="units are specified in inches (default)")
+    size_group.add_option("--mm", dest="unit", default="in", const="mm",
+                          action="store_const",
+                          help="units are specified in millimeters")
+    # Output options
+    out_group = OptionGroup(parser, "Output options")
+    out_group.add_option("-d", "--dpi", dest="dpi", default=300, type="int",
+                         help="DPI of exported file")
+    out_group.add_option("--pdf", dest="output", default="png", const="pdf",
+                         action="store_const", help="Export as PDF")
+    out_group.add_option("--png", dest="output", default="png", const="png",
+                         action="store_const", help="Export as PNG (default)")
+    out_group.add_option("--svg", dest="output", default="png", const="svg",
+                         action="store_const", help="Export as SVG")
+    out_group.add_option("--eps", dest="output", default="png", const="eps",
+                         action="store_const", help="Export as EPS")
+    out_group.add_option("--cmyk-pdf", dest="output", default="png",
+                         const="cmyk_pdf", action="store_const",
+                         help="Export as PDF with CMYK color")
+    # Finish setting up option parser
+    parser.add_option_group(size_group)
+    parser.add_option_group(out_group)
     options = parser.parse_args()[0]
-    # check what templates are available
-    config.parser.read(options.config_location)
-    templates = config.available_templates(config.parser)
-    if options.listtemplates:
-        print "Available templates:"
-        for section in templates.sections():
-            print "  %s (%s)" % (section, templates.get(section, 'humandesc'))
-        sys.exit(0)
-    if options.template not in templates.sections():
-        print "%s not an available template" % options.template
-        sys.exit(1)
+
     # ask for FAS login
     print "Login to FAS:"
     print "Username:",
@@ -141,31 +166,32 @@ def main():
             elif lineno == '0' or lineno == '1' or lineno == '2' or \
                     lineno == '3' or lineno == '4' or lineno == '5':
                 lines[int(lineno)] = newdata
-    # figure out template locations
-    frontloc = config.parser.get('location', 'templates')+'/'+\
-            templates.get(options.template, 'front')
-    backloc = config.parser.get('location', 'templates')+'/'+\
-            templates.get(options.template, 'back')
     # generate front of business card
     print "Generating front...",
     sys.stdout.flush()
     name_utf8 = name.decode('utf-8')
-    xml = generate.gen_front(name_utf8, title, lines, frontloc)
+    xml = generate.gen_front(name_utf8, title, lines, options.height,
+                             options.width, options.bleed, options.unit)
     if options.output == "svg":
         export.svg_to_file(xml, options.username+'-front.'+options.output)
     elif options.output == "cmyk_pdf":
-        export.svg_to_cmyk_pdf(xml, options.username+'-front.pdf')
+        export.svg_to_cmyk_pdf(xml, options.username+'-front.pdf',
+                               options.height, options.width, options.bleed,
+                               options.unit)
     else:
         export.svg_to_pdf_png(xml, options.username+'-front.'+options.output,
                               options.output, options.dpi)
     # generate back of business card
     print "Generating back...",
     sys.stdout.flush()
-    xml = generate.gen_back(backloc)
+    xml = generate.gen_back(options.height, options.width, options.bleed,
+                            options.unit)
     if options.output == "svg":
         export.svg_to_file(xml, options.username+'-back.'+options.output)
     elif options.output == "cmyk_pdf":
-        export.svg_to_cmyk_pdf(xml, options.username+'-back.pdf')
+        export.svg_to_cmyk_pdf(xml, options.username+'-back.pdf',
+                               options.height, options.width, options.bleed,
+                               options.unit)
     else:
         export.svg_to_pdf_png(xml, options.username+'-back.'+options.output,
                               options.output, options.dpi)
