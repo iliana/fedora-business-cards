@@ -26,6 +26,7 @@ from fedora.client.fas2 import AccountSystem
 
 from fedora_business_cards import __version__
 
+
 def get_information(loginname, password, username=None):
     """
     Fetches information about a certain contributor from FAS.

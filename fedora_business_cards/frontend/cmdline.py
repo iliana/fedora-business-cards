@@ -31,7 +31,7 @@ import sys
 
 from fedora_business_cards import information
 from fedora_business_cards import generate
-from fedora_business_cards import export # hah
+from fedora_business_cards import export  # hah
 
 
 def check_decimal(option, opt, value):
@@ -44,6 +44,7 @@ def check_decimal(option, opt, value):
         return OptionValueError("option %s: invalid decimal value: %s" %
                                 (opt, value))
 
+
 class NewOptionClass(Option):
     """
     Replacement Option class for OptionParser that includes decimal type.
@@ -52,11 +53,13 @@ class NewOptionClass(Option):
     TYPE_CHECKER = copy(Option.TYPE_CHECKER)
     TYPE_CHECKER["decimal"] = check_decimal
 
+
 def cmdline_card_line(data):
     """
     Print a line of the business card for the cmdline frontend.
     """
-    return "| %s%s |" % (data, ' '*(59-len(data)))
+    return "| %s%s |" % (data, ' ' * (59 - len(data)))
+
 
 def main():
     """
@@ -68,7 +71,7 @@ def main():
     # Create decimal type
     # Base options
     parser.add_option("-u", "--username", dest="username", default="",
-                      help="If set, use a different name than the one logged"+\
+                      help="If set, use a different name than the one logged"
                       " in with to fill out business card information")
     # Size options
     size_group = OptionGroup(parser, "Size options")
@@ -78,7 +81,7 @@ def main():
     size_group.add_option("--width", dest="width",
                           default=decimal.Decimal("3.5"), type="decimal",
                           help="business card width (default: 3.5)")
-    size_group.add_option("--bleed", dest="bleed", type="decimal", 
+    size_group.add_option("--bleed", dest="bleed", type="decimal",
                           default=decimal.Decimal("0"), help="extra space "
                           "around card, often requested by printers "
                           "(default: 0)")
@@ -133,25 +136,25 @@ def main():
                  '']
     else:
         lines = [infodict['email'],
-                 infodict['irc']+" on irc.freenode.net",
+                 infodict['irc'] + " on irc.freenode.net",
                  infodict['url'],
                  '',
-                 "GPG key ID: "+infodict['gpgid'],
+                 "GPG key ID: " + infodict['gpgid'],
                  '']
     done_editing = False
     while not done_editing:
         print "Current business card layout:"
-        print "   +"+"-"*61+"+"
-        print " n "+cmdline_card_line(name)
-        print " t "+cmdline_card_line(title)
-        print "   "+cmdline_card_line('')
+        print "   +" + "-" * 61 + "+"
+        print " n " + cmdline_card_line(name)
+        print " t " + cmdline_card_line(title)
+        print "   " + cmdline_card_line('')
         for i in range(6):
-            print (" %i " % i)+cmdline_card_line(lines[i])
-        print "   "+cmdline_card_line('')
-        print "   "+cmdline_card_line('')
-        print "   "+cmdline_card_line('fedora'+' '*17+\
-                                      'freedom | friends | features | first')
-        print "   +"+"-"*61+"+"
+            print (" %i " % i) + cmdline_card_line(lines[i])
+        print "   " + cmdline_card_line('')
+        print "   " + cmdline_card_line('')
+        print "   " + cmdline_card_line('fedora' + ' ' * 17 + \
+                                        'freedom | friends | features | first')
+        print "   +" + "-" * 61 + "+"
         print "Enter a line number to edit, or [y] to accept:",
         lineno = raw_input()
         if lineno == "" or lineno == "y":
@@ -173,27 +176,27 @@ def main():
     xml = generate.gen_front(name_utf8, title, lines, options.height,
                              options.width, options.bleed, options.unit)
     if options.output == "svg":
-        export.svg_to_file(xml, options.username+'-front.'+options.output)
+        export.svg_to_file(xml, options.username + '-front.' + options.output)
     elif options.output == "cmyk_pdf":
-        export.svg_to_cmyk_pdf(xml, options.username+'-front.pdf',
+        export.svg_to_cmyk_pdf(xml, options.username + '-front.pdf',
                                options.height, options.width, options.bleed,
                                options.unit)
     else:
-        export.svg_to_pdf_png(xml, options.username+'-front.'+options.output,
-                              options.output, options.dpi)
+        export.svg_to_pdf_png(xml, options.username + '-front.' +
+                              options.output, options.output, options.dpi)
     # generate back of business card
     print "Generating back...",
     sys.stdout.flush()
     xml = generate.gen_back(options.height, options.width, options.bleed,
                             options.unit)
     if options.output == "svg":
-        export.svg_to_file(xml, options.username+'-back.'+options.output)
+        export.svg_to_file(xml, options.username + '-back.' + options.output)
     elif options.output == "cmyk_pdf":
-        export.svg_to_cmyk_pdf(xml, options.username+'-back.pdf',
+        export.svg_to_cmyk_pdf(xml, options.username + '-back.pdf',
                                options.height, options.width, options.bleed,
                                options.unit)
     else:
-        export.svg_to_pdf_png(xml, options.username+'-back.'+options.output,
-                              options.output, options.dpi)
+        export.svg_to_pdf_png(xml, options.username + '-back.' +
+                              options.output, options.output, options.dpi)
     print "Done."
     sys.stdout.flush()

@@ -31,6 +31,7 @@ BLANK_SVG = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>'
 FEDORA_VIEWBOX = '100 100 707.776 215.080'
 GOLDEN_RATIO = Decimal('1.61803399')
 
+
 def convert(value, from_unit, to_unit):
     """
     Convert a value from one unit to another unit.
@@ -42,6 +43,7 @@ def convert(value, from_unit, to_unit):
     for units in conversions.keys():
         conversions[(units[1], units[0])] = 1 / conversions[units]
     return value * conversions[(from_unit, to_unit)]
+
 
 def find_node(doc_node, tag_name, attribute_name, attribute_value):
     """
