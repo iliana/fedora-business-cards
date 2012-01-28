@@ -26,20 +26,7 @@ import subprocess
 import math
 import os
 
-from fedora_business_cards.generate import convert
-
-RGB_TO_CMYK = (
-    # Inkscape .46 output
-    ("0 0 0 setrgbcolor", "0 0 0 1"),
-    ("1 1 1 setrgbcolor", "0 0 0 0"),
-    ("0.23529412 0.43137255 0.70588237 setrgbcolor", "1 0.46 0 0"),
-    ("0.16078432 0.25490198 0.44705883 setrgbcolor", "1 0.57 0 0.38"),
-    # Inkscape .47 output
-    ("0 g", "0 0 0 1"),
-    ("1 g", "0 0 0 0"),
-    ("0.235294 0.431373 0.705882 rg", "1 0.46 0 0"),
-    ("0.160784 0.254902 0.447059 rg", "1 0.57 0 0.38"),
-)
+from fedora_business_cards.common import convert
 
 
 def run_command(args, stdin=None):
@@ -91,23 +78,24 @@ def svg_to_pdf_png(xmlstring, filename, output_format='png', dpi=300):
 
 
 def svg_to_cmyk_pdf(xmlstring, filename, user_height, user_width, user_bleed,
-                    unit, dpi=300, converter=RGB_TO_CMYK):
+                    unit, dpi=300, converter=None):
     """
     Export an SVG to a PDF while converting to CMYK.
       xmlstring = the SVG XML to export
       filename = name of file to save as
       dpi = DPI to export PDF with (default: 300)
       converter = a tuple of tuples to convert from RGB to CMYK colors. see
-                  RGB_TO_CMYK for an example
+                  generators.fedora.rgb_to_cmyk for an example
     """
     svgfilename = "/tmp/fedora-business-cards-buffer.svg"
     filename = os.path.join(os.getenv("PWD"), filename)
     svg_to_file(xmlstring, svgfilename)
     args = ['inkscape', '-C', '-z', '-T', '-E', '/dev/stdout', svgfilename]
     eps = run_command(args)[0]
-    for that in converter:
-        eps = eps.replace("\n%s" % that[0],
-                          "\n%s setcmykcolor" % that[1])
+    if converter:
+        for that in converter:
+            eps = eps.replace("\n%s" % that[0],
+                              "\n%s setcmykcolor" % that[1])
     width = int(math.ceil(convert(user_width + (user_bleed * 2), unit, 'in') *
                           dpi))
     height = int(math.ceil(convert(user_height + (user_bleed * 2), unit, 'in')
