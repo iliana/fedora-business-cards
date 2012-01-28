@@ -78,7 +78,7 @@ def svg_to_pdf_png(xmlstring, filename, output_format='png', dpi=300):
 
 
 def svg_to_cmyk_pdf(xmlstring, filename, user_height, user_width, user_bleed,
-                    unit, dpi=300, converter=None):
+                    unit, converter=None, dpi=300):
     """
     Export an SVG to a PDF while converting to CMYK.
       xmlstring = the SVG XML to export
@@ -101,7 +101,7 @@ def svg_to_cmyk_pdf(xmlstring, filename, user_height, user_width, user_bleed,
     args = ['gs', '-q', '-sDEVICE=pdfwrite', '-dAutoRotatePages=/None',
             '-r%s' % dpi, '-g%sx%s' % (width, height),
             '-sOutputFile=%s' % filename, '-', '-c', 'quit']
-    print run_command(args, eps)[0]
+    run_command(args, eps)
     return True
 
 
