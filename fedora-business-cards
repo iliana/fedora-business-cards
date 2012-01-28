@@ -1,7 +1,8 @@
 #!/usr/bin/python
 ###
 # fedora-business-cards - for rendering Fedora contributor business cards
-# Copyright (C) 2008  Ian Weller <ianweller@gmail.com>
+# Copyright (C) 2012  Red Hat, Inc. and others.
+# Primary maintainer: Ian Weller <iweller@redhat.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
