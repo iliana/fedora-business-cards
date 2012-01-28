@@ -140,7 +140,12 @@ def eps_cmyk_convert(epsdata_in, converter):
             blue = 0
         else:
             epsdata_new += line + '\n'
+            continue
         # check converter
-        rgb = [int(x) for x in (red, green, blue)]
+        rgb = tuple([int(x) for x in (red, green, blue)])
         if rgb in converter:
-            epsdata_new += '%.4f %.4f %.4f %.4f setcmykcolor' % converter[rgb]
+            epsdata_new += '%.4f %.4f %.4f %.4f setcmykcolor\n' % \
+                    converter[rgb]
+        else:
+            epsdata_new += line + '\n'
+    return epsdata_new
