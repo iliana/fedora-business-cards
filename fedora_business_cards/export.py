@@ -93,9 +93,7 @@ def svg_to_cmyk_pdf(xmlstring, filename, user_height, user_width, user_bleed,
     args = ['inkscape', '-C', '-z', '-T', '-E', '/dev/stdout', svgfilename]
     eps = run_command(args)[0]
     if converter:
-        for that in converter:
-            eps = eps.replace("\n%s" % that[0],
-                              "\n%s setcmykcolor" % that[1])
+        eps = eps_cmyk_convert(eps, converter)
     width = int(math.ceil(convert(user_width + (user_bleed * 2), unit, 'in') *
                           dpi))
     height = int(math.ceil(convert(user_height + (user_bleed * 2), unit, 'in')
@@ -105,3 +103,44 @@ def svg_to_cmyk_pdf(xmlstring, filename, user_height, user_width, user_bleed,
             '-sOutputFile=%s' % filename, '-', '-c', 'quit']
     print run_command(args, eps)[0]
     return True
+
+
+def eps_cmyk_convert(epsdata_in, converter):
+    # first, normalize the output through eps2eps
+    args = ['eps2eps', '/dev/stdin', '/dev/stdout']
+    epsdata = run_command(args, epsdata_in)[0]
+    epsdata_new = ''
+    # go through each line and check for color commands
+    for line in epsdata.split('\n'):
+        # parse color commands
+        # R G B rG
+        if line[-2:] == 'rG':
+            (red, green, blue) = line[:-2].split()
+        # R GB r3
+        elif line[-2:] == 'r3':
+            (red, green) = line[:-2].split()
+            blue = green
+        # RB G r5
+        elif line[-2:] == 'r5':
+            (red, green) = line[:-2].split()
+            blue = red
+        # RG B r6
+        elif line[-2:] == 'r6':
+            (red, blue) = line[:-2].split()
+            green = red
+        # RGB G
+        elif line[-2:] == ' G':
+            red = line.split()[0]
+            green = red
+            blue = red
+        # K
+        elif line == 'K':
+            red = 0
+            green = 0
+            blue = 0
+        else:
+            epsdata_new += line + '\n'
+        # check converter
+        rgb = [int(x) for x in (red, green, blue)]
+        if rgb in converter:
+            epsdata_new += '%.4f %.4f %.4f %.4f setcmykcolor' % converter[rgb]
