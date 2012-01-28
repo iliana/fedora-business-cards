@@ -10,9 +10,11 @@ options(
         name="fedora-business-cards",
         version="0.3",
         description="A generator for Fedora contributor business cards",
-        packages=["fedora_business_cards", "fedora_business_cards.frontend"],
+        packages=["fedora_business_cards",
+                  "fedora_business_cards.frontend",
+                  "fedora_business_cards.generators"],
         author="Ian Weller",
-        author_email="ian@ianweller.org",
+        author_email="iweller@redhat.com",
         license="GPLv2+",
         url="https://fedoraproject.org/wiki/Business_cards"
     ),
