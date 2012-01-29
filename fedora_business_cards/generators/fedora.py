@@ -111,15 +111,14 @@ class FedoraGenerator(BaseGenerator):
             lineno = raw_input()
             if lineno == "" or lineno == "y":
                 done_editing = True
-            else:
+            elif lineno in ['n', 't', '0', '1', '2', '3', '4', '5']:
                 print ("Enter new data for line %s:" % lineno),
                 newdata = raw_input()
                 if lineno == 'n':
                     self.fields['name'] = newdata
                 elif lineno == 't':
                     self.fields['title'] = newdata
-                elif lineno == '0' or lineno == '1' or lineno == '2' or \
-                        lineno == '3' or lineno == '4' or lineno == '5':
+                elif lineno in ['0', '1', '2', '3', '4', '5']:
                     self.fields['lines'][int(lineno)] = newdata
 
     def generate_front(self):
