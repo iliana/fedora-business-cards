@@ -55,7 +55,7 @@ class BaseGenerator(object):
         raise NotImplementedError()
 
     def generate_back(self):
-        raise NotImplementedError()
+        return None
 
 
 __all__ = ('fedora',)

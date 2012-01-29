@@ -150,13 +150,17 @@ def main():
     print "Generating back...",
     sys.stdout.flush()
     xml = gen.generate_back()
-    if options.output == "svg":
-        export.svg_to_file(xml, 'back.' + options.output)
-    elif options.output == "cmyk_pdf":
-        export.svg_to_cmyk_pdf(xml, 'back.pdf', options.height, options.width,
-                               options.bleed, options.unit, gen.rgb_to_cmyk)
+    if xml:
+        if options.output == "svg":
+            export.svg_to_file(xml, 'back.' + options.output)
+        elif options.output == "cmyk_pdf":
+            export.svg_to_cmyk_pdf(xml, 'back.pdf', options.height,
+                                   options.width, options.bleed, options.unit,
+                                   gen.rgb_to_cmyk)
+        else:
+            export.svg_to_pdf_png(xml, 'back.' + options.output,
+                                  options.output, options.dpi)
     else:
-        export.svg_to_pdf_png(xml, 'back.' + options.output, options.output,
-                              options.dpi)
+        print "(no back generated)",
     print "Done."
     sys.stdout.flush()
