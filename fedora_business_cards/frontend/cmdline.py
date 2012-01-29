@@ -129,7 +129,7 @@ def main():
                                          % args[0])
     except ImportError:
         parser.error("Generator '%s' does not exist or is broken" % args[0])
-    gen = generator(options)
+    gen = module.generator(options)
 
     # collect information from user if necessary
     gen.collect_information()
