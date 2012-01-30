@@ -22,3 +22,8 @@ Most of the modules are self-documenting, and running the fedora-business-cards
 executable makes things significantly easier. The executable uses the cmdline
 frontend in fedora_business_cards.frontend, complete with optparse and all that
 fun stuff.
+
+If you're running this from the Git repository, you might consider adding
+something like this to your .bashrc:
+  alias fedora-business-cards='PYTHONPATH=/home/ianweller/git/fedora-business-cards /home/ianweller/git/fedora-business-cards/fedora-business-cards'
+Replace my path to the Git repository with yours.
