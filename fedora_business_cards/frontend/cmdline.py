@@ -25,7 +25,7 @@ optparser.OptionParser instead.
 
 from copy import copy
 import decimal
-from optparse import OptionParser, OptionGroup, Option, OptionValueError
+import optparse
 import sys
 
 from fedora_business_cards import common
@@ -40,16 +40,16 @@ def check_decimal(option, opt, value):
     try:
         return decimal.Decimal(value)
     except decimal.InvalidOperation:
-        return OptionValueError("option %s: invalid decimal value: %s" %
+        return optparse.OptionValueError("option %s: invalid decimal value: %s" %
                                 (opt, value))
 
 
-class NewOptionClass(Option):
+class NewOptionClass(optparse.Option):
     """
     Replacement Option class for OptionParser that includes decimal type.
     """
-    TYPES = Option.TYPES + ("decimal",)
-    TYPE_CHECKER = copy(Option.TYPE_CHECKER)
+    TYPES = optparse.Option.TYPES + ("decimal",)
+    TYPE_CHECKER = copy(optparse.Option.TYPE_CHECKER)
     TYPE_CHECKER["decimal"] = check_decimal
 
 
@@ -58,13 +58,13 @@ def main():
     Call this to make things happen.
     """
     # Setup option parser
-    parser = OptionParser(option_class=NewOptionClass)
+    parser = optparse.OptionParser(option_class=NewOptionClass)
     parser.usage = "%prog [options] GENERATOR"
     # General options
     parser.add_option("--list-generators", dest="showgen", default=False,
                       action="store_true", help="display list of generators")
     # Size options
-    size_group = OptionGroup(parser, "Size options")
+    size_group = optparse.OptionGroup(parser, "Size options")
     size_group.add_option("--height", dest="height",
                           default=decimal.Decimal("2"), type="decimal",
                           help="business card height (default: 2)")
@@ -82,7 +82,7 @@ def main():
                           action="store_const",
                           help="units are specified in millimeters")
     # Output options
-    out_group = OptionGroup(parser, "Output options")
+    out_group = optparse.OptionGroup(parser, "Output options")
     out_group.add_option("-d", "--dpi", dest="dpi", default=300, type="int",
                          help="DPI of exported file")
     out_group.add_option("--pdf", dest="output", default="png", const="pdf",
@@ -121,6 +121,8 @@ def main():
         sys.exit()
 
     if len(args) != 1:
+        parser.print_help()
+        parser.set_usage(optparse.SUPPRESS_USAGE)
         parser.error("Exactly one argument (the generator) is required")
 
     # Import the generator we care abuot
