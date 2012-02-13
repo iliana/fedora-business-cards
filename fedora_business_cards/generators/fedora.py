@@ -215,8 +215,8 @@ class FedoraGenerator(BaseGenerator):
                                                 self.unit))
         foundations.setAttribute('y', '%s%s' % (self.height + self.bleed -
                                                 zeropointtwo, self.unit))
-        foundations_text = biz_card.createTextNode('FREEDOM. FEATURES. '
-                                                   'FRIENDS. FIRST.')
+        foundations_text = biz_card.createTextNode('FREEDOM. FRIENDS. '
+                                                   'FEATURES. FIRST.')
         foundations.appendChild(foundations_text)
         svg_element.appendChild(foundations)
         return biz_card.toprettyxml()
