@@ -25,6 +25,7 @@ Functions to export cards from SVGs.
 import subprocess
 import math
 import os
+import tempfile
 
 from fedora_business_cards.common import convert
 
@@ -42,14 +43,15 @@ def run_command(args, stdin=None):
         return proc.communicate()
 
 
-def svg_to_file(xmlstring, filename):
+def svg_to_file(xmlstring):
     """
     Write an SVG to a file.
     """
-    handle = file(filename, 'w')
+    fd, svgfilename = tempfile.mkstemp("fedora-business-cards-buffer.svg")
+    handle = os.fdopen(fd,'w')
     handle.write(xmlstring.encode('utf-8'))
     handle.close()
-    return True
+    return svgfilename
 
 
 def svg_to_pdf_png(xmlstring, filename, output_format='png', dpi=300):
@@ -60,20 +62,24 @@ def svg_to_pdf_png(xmlstring, filename, output_format='png', dpi=300):
       output_format = either 'png', 'pdf', or 'eps'
       dpi = DPI to export PNG with (default: 300)
     """
-    svgfilename = "/tmp/fedora-business-cards-buffer.svg"
+    svgfilename = svg_to_file(xmlstring)
     filename = os.path.join(os.getenv("PWD"), filename)
-    svg_to_file(xmlstring, svgfilename)
-    if output_format == 'png':
-        run_command(['inkscape', '-C', '-z', '-d', str(dpi), '-e', filename,
-                     svgfilename])
-    elif output_format == 'pdf':
-        run_command(['inkscape', '-C', '-z', '-T', '-A', filename,
-                     svgfilename])
-    elif output_format == 'eps':
-        run_command(['inkscape', '-C', '-z', '-T', '-E', filename,
-                     svgfilename])
-    else:
-        raise Exception("Invalid file format requested")
+    try:
+        if output_format == 'png':
+            run_command(['inkscape', '-C', '-z', '-d', str(dpi), '-e', filename,
+                         svgfilename])
+        elif output_format == 'pdf':
+            run_command(['inkscape', '-C', '-z', '-T', '-A', filename,
+                         svgfilename])
+        elif output_format == 'eps':
+            run_command(['inkscape', '-C', '-z', '-T', '-E', filename,
+                         svgfilename])
+        else:
+            os.remove(svgfilename)
+            raise Exception("Invalid file format requested")
+    finally:
+        os.remove(svgfilename)
+
     return True
 
 
@@ -87,9 +93,8 @@ def svg_to_cmyk_pdf(xmlstring, filename, user_height, user_width, user_bleed,
       converter = a tuple of tuples to convert from RGB to CMYK colors. see
                   generators.fedora.rgb_to_cmyk for an example
     """
-    svgfilename = "/tmp/fedora-business-cards-buffer.svg"
     filename = os.path.join(os.getenv("PWD"), filename)
-    svg_to_file(xmlstring, svgfilename)
+    svgfilename = svg_to_file(xmlstring)
     args = ['inkscape', '-C', '-z', '-T', '-E', '/dev/stdout', svgfilename]
     eps = run_command(args)[0]
     if converter:
@@ -102,6 +107,7 @@ def svg_to_cmyk_pdf(xmlstring, filename, user_height, user_width, user_bleed,
             '-r%s' % dpi, '-g%sx%s' % (width, height),
             '-sOutputFile=%s' % filename, '-', '-c', 'quit']
     run_command(args, eps)
+    os.remove(svgfilename)
     return True
 
 
