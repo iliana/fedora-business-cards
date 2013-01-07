@@ -257,13 +257,13 @@ class FedoraGenerator(BaseGenerator):
         # Calculate width of logo
         logo_width = middle_length / Decimal('.914408')
         # Calculate horizontal position of logo
-        horz_pos = horz_padding - (logo_width * Decimal('.030853'))
+        horz_pos = horz_padding - (logo_width * Decimal('.030853')) + self.bleed
         # Calculate height of logotype
         logo_height = logo_width / Decimal('3.290757')
         logotype_height = logo_height * Decimal('.697434')
         # Calculate vertical position of logo
         vert_padding = (self.height - logotype_height) / 2
-        vert_pos = self.height - (vert_padding + logo_height)
+        vert_pos = self.height - (vert_padding + logo_height) + self.bleed
         # Apply everything to the logo SVG
         logo_svg = biz_card.importNode(fedora_logo.documentElement, 9001)
         logo_svg.setAttribute('width', '%s%s' % (logo_width, self.unit))
