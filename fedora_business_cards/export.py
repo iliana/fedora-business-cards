@@ -43,12 +43,19 @@ def run_command(args, stdin=None):
         return proc.communicate()
 
 
-def svg_to_file(xmlstring):
+def svg_to_file(xmlstring, filename=None):
     """
-    Write an SVG to a file.
+    Write an SVG to a file. Returns the filename.
+
+    You should only provide a second argument if you are directly outputting an
+    SVG for the user. Not doing so can be a security flaw!
     """
-    fd, svgfilename = tempfile.mkstemp("fedora-business-cards-buffer.svg")
-    handle = os.fdopen(fd,'w')
+    if filename is None:
+        fd, svgfilename = tempfile.mkstemp("fedora-business-cards-buffer.svg")
+        handle = os.fdopen(fd,'w')
+    else:
+        svgfilename = filename
+        handle = file(filename, 'w')
     handle.write(xmlstring.encode('utf-8'))
     handle.close()
     return svgfilename
