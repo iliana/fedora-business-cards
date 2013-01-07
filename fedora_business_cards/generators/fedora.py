@@ -208,7 +208,7 @@ class FedoraGenerator(BaseGenerator):
         # Four foundations set in Comfortaa
         foundations = biz_card.createElement('text')
         foundations.setAttribute('font-family', 'Comfortaa')
-        foundations.setAttribute('font-size', '10px')
+        foundations.setAttribute('font-size', '9px')
         foundations.setAttribute('text-anchor', 'end')
         foundations.setAttribute('x', '%s%s' % \
                                  (self.width + self.bleed - (2 * zeropointtwo),
