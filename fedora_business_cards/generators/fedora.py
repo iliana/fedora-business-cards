@@ -103,9 +103,9 @@ class FedoraGenerator(BaseGenerator):
                 print (" %i " % i) + cmdline_card_line(self.fields['lines'][i])
             print "   " + cmdline_card_line('')
             print "   " + cmdline_card_line('')
-            print "   " + cmdline_card_line('fedora' + ' ' * 17 + \
-                                            'freedom | friends | '
-                                            'features | first')
+            print "   " + cmdline_card_line('fedora' + ' ' * 19 + \
+                                            'FREEDOM. FRIENDS. '
+                                            'FEATURES. FIRST.')
             print "   +" + "-" * 61 + "+"
             print "Enter a line number to edit, or [y] to accept:",
             lineno = raw_input()
