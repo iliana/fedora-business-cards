@@ -40,8 +40,8 @@ def check_decimal(option, opt, value):
     try:
         return decimal.Decimal(value)
     except decimal.InvalidOperation:
-        return optparse.OptionValueError("option %s: invalid decimal value: %s" %
-                                (opt, value))
+        return optparse.OptionValueError("option %s: invalid decimal value: %s"
+                                         % (opt, value))
 
 
 class NewOptionClass(optparse.Option):

@@ -52,7 +52,7 @@ def svg_to_file(xmlstring, filename=None):
     """
     if filename is None:
         fd, svgfilename = tempfile.mkstemp("fedora-business-cards-buffer.svg")
-        handle = os.fdopen(fd,'w')
+        handle = os.fdopen(fd, 'w')
     else:
         svgfilename = filename
         handle = file(filename, 'w')
@@ -73,8 +73,8 @@ def svg_to_pdf_png(xmlstring, filename, output_format='png', dpi=300):
     filename = os.path.join(os.getenv("PWD"), filename)
     try:
         if output_format == 'png':
-            run_command(['inkscape', '-C', '-z', '-d', str(dpi), '-e', filename,
-                         svgfilename])
+            run_command(['inkscape', '-C', '-z', '-d', str(dpi), '-e',
+                         filename, svgfilename])
         elif output_format == 'pdf':
             run_command(['inkscape', '-C', '-z', '-T', '-A', filename,
                          svgfilename])

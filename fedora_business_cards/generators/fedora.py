@@ -267,7 +267,8 @@ class FedoraGenerator(BaseGenerator):
         # Calculate width of logo
         logo_width = middle_length / Decimal('.914408')
         # Calculate horizontal position of logo
-        horz_pos = horz_padding - (logo_width * Decimal('.030853')) + self.bleed
+        horz_pos = horz_padding - (logo_width * Decimal('.030853')) + \
+                self.bleed
         # Calculate height of logotype
         logo_height = logo_width / Decimal('3.290757')
         logotype_height = logo_height * Decimal('.697434')
