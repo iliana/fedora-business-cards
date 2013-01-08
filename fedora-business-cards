@@ -1,36 +1,6 @@
 #!/usr/bin/python
-###
-# fedora-business-cards - for rendering Fedora contributor business cards
-# Copyright (C) 2012  Red Hat, Inc. and others.
-# Primary maintainer: Ian Weller <iweller@redhat.com>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-###
-
-"""
-Executable program to load the default frontend for the fedora_business_cards
-module.
-"""
-
-import sys
-try:
-    from fedora_business_cards.frontend import cmdline
-    cmdline.main()
-except ImportError:
-    print >> sys.stderr, """\
-There was a problem importing the fedora_business_cards module. Please make
-sure that you have fedora-business-cards installed properly.
-"""
-    sys.exit(1)
+# This file is provided as a conveinence to people using the Git repository.
+# It is not included in source distributions, and it is created in binary
+# distributions as a setuptools entry point.
+from fedora_business_cards.frontend.cmdline import main
+main()

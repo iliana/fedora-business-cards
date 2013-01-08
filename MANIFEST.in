@@ -1,1 +1,1 @@
-include pavement.py COPYING INSTALL fedora-business-cards
+include COPYING README

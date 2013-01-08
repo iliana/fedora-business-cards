@@ -16,14 +16,10 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-===========================================================
+--
 
-Most of the modules are self-documenting, and running the fedora-business-cards
-executable makes things significantly easier. The executable uses the cmdline
-frontend in fedora_business_cards.frontend, complete with optparse and all that
-fun stuff.
-
-If you're running this from the Git repository, you might consider adding
-something like this to your .bashrc:
-  alias fedora-business-cards='PYTHONPATH=/home/ianweller/git/fedora-business-cards /home/ianweller/git/fedora-business-cards/fedora-business-cards'
-Replace my path to the Git repository with yours.
+Contributors:
+Ian Weller (primary maintainer)
+Arturo Fernandez (Unicode fixes)
+Nick Bebout (Fedora card layout fixes)
+Michael Scherer (security fixes)
