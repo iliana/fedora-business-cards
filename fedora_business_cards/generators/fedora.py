@@ -208,7 +208,17 @@ class FedoraGenerator(BaseGenerator):
         # Four foundations set in Comfortaa
         foundations = biz_card.createElement('text')
         foundations.setAttribute('font-family', 'Comfortaa')
-        foundations.setAttribute('font-size', '9px')
+        # Handle dynamic widths as sanely as possible
+        if self.width < common.convert(Decimal('2.831'), 'in', self.unit):
+            foundations.setAttribute('font-size', '6px')
+        elif self.width < common.convert(Decimal('2.930'), 'in', self.unit):
+            foundations.setAttribute('font-size', '6.5px')
+        elif self.width < common.convert(Decimal('3.129'), 'in', self.unit):
+            foundations.setAttribute('font-size', '7px')
+        elif self.width < common.convert(Decimal('3.328'), 'in', self.unit):
+            foundations.setAttribute('font-size', '8px')
+        else:
+            foundations.setAttribute('font-size', '9px')
         foundations.setAttribute('text-anchor', 'end')
         foundations.setAttribute('x', '%s%s' % \
                                  (self.width + self.bleed - (2 * zeropointtwo),
