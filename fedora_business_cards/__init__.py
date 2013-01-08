@@ -26,5 +26,5 @@ on a SVG, then exports that to a PDF and PNG.
 
 from pkg_resources import get_distribution, DistributionNotFound
 
-__version__ = '0.3'
+__version__ = '1.beta1'
 __all__ = ('common', 'export', 'frontend', 'generators')
