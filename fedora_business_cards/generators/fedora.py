@@ -54,39 +54,51 @@ class FedoraGenerator(BaseGenerator):
                                 default='', help='If set, use a different name'
                                 ' than the one logged in with to fill out'
                                 ' business card information')
+        option_group.add_option('-t', '--template', dest='template',
+                                default=None, help='Use template file for '
+                                'card values instead of using FAS')
         return option_group
 
     def collect_information(self):
-        # ask for FAS login
-        print "Login to FAS:"
-        print "Username:",
-        username = raw_input()
-        password = getpass()
+        if self.options.template is None:
+            # ask for FAS login
+            print "Login to FAS:"
+            print "Username:",
+            username = raw_input()
+            password = getpass()
 
-        # get information from FAS
-        fas = AccountSystem(username=username, password=password,
-                            useragent='fedora-business-cards/%s' % __version__)
-        if self.options.username:
-            username = self.options.username
-        userinfo = fas.person_by_username(username)
+            # get information from FAS
+            fas = AccountSystem(username=username, password=password,
+                                useragent='fedora-business-cards/%s' % __version__)
+            if self.options.username:
+                username = self.options.username
+            userinfo = fas.person_by_username(username)
 
-        # set business card fields
-        self.fields['name'] = userinfo["human_name"]
-        self.fields['title'] = "Fedora Project Contributor"
-        if userinfo['gpg_keyid'] == None:
-            gpg = ''
+            # set business card fields
+            self.fields['name'] = userinfo["human_name"]
+            self.fields['title'] = "Fedora Project Contributor"
+            if userinfo['gpg_keyid'] == None:
+                gpg = ''
+            else:
+                gpg = "GPG key ID: %s" % userinfo['gpg_keyid']
+            self.fields['lines'] = [''] * 6
+            self.fields['lines'][0] = '%s@fedoraproject.org' % username
+            self.fields['lines'][1] = 'fedoraproject.org'
+            next_line = 2
+            if userinfo['ircnick']:
+                self.fields['lines'][next_line] = '%s on irc.freenode.net' % \
+                        userinfo['ircnick']
+                next_line += 1
+            next_line += 1  # blank line
+            self.fields['lines'][next_line] = gpg
         else:
-            gpg = "GPG key ID: %s" % userinfo['gpg_keyid']
-        self.fields['lines'] = [''] * 6
-        self.fields['lines'][0] = '%s@fedoraproject.org' % username
-        self.fields['lines'][1] = 'fedoraproject.org'
-        next_line = 2
-        if userinfo['ircnick']:
-            self.fields['lines'][next_line] = '%s on irc.freenode.net' % \
-                    userinfo['ircnick']
-            next_line += 1
-        next_line += 1  # blank line
-        self.fields['lines'][next_line] = gpg
+            with open(self.options.template, "r") as templatefile:
+                self.fields['name'] = templatefile.readline().strip()
+                self.fields['title'] = templatefile.readline().strip()
+                self.fields['lines'] = []
+                for line in templatefile.readlines():
+                    self.fields['lines'].append(line.strip())
+
 
         # ask user to edit information
         def cmdline_card_line(data):
@@ -120,6 +132,13 @@ class FedoraGenerator(BaseGenerator):
                     self.fields['title'] = newdata
                 elif lineno in ['0', '1', '2', '3', '4', '5']:
                     self.fields['lines'][int(lineno)] = newdata
+
+        print("Current template:")
+        print(self.fields['name'])
+        print(self.fields['title'])
+        for line in self.fields['lines']:
+            print(line)
+
 
     def generate_front(self):
         # Create DOM objects
