@@ -133,6 +133,13 @@ class FedoraGenerator(BaseGenerator):
                 elif lineno in ['0', '1', '2', '3', '4', '5']:
                     self.fields['lines'][int(lineno)] = newdata
 
+        print("Current template:")
+        print(self.fields['name'])
+        print(self.fields['title'])
+        for line in self.fields['lines']:
+            print(line)
+
+
     def generate_front(self):
         # Create DOM objects
         biz_card = common.create_blank_svg(self.height, self.width, self.bleed,
